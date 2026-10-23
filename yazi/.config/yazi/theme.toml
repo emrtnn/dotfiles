@@ -1,0 +1,297 @@
+# Caelus theme (palette: ~/dotfiles/README.md).
+
+[app.overall]
+bg = "#0f0f0f"
+fg = "#f4decd"
+
+[cmp.active]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[cmp.border]
+fg = "#ef934d"
+
+[cmp.inactive]
+fg = "#d9cdb5"
+
+[confirm.border]
+fg = "#ef934d"
+
+[confirm.btn_no]
+bg = "#1e1f1e"
+fg = "#d9cdb5"
+
+[confirm.btn_yes]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[confirm.title]
+fg = "#ef934d"
+
+[[filetype.rules]]
+fg = "#efbf71"
+mime = "**/image/*"
+
+[[filetype.rules]]
+fg = "#e28dc6"
+mime = "**/{audio,video}/*"
+
+[[filetype.rules]]
+fg = "#f16e65"
+mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}"
+
+[[filetype.rules]]
+fg = "#7ec9a3"
+mime = "**/application/{pdf,doc,rtf}"
+
+[[filetype.rules]]
+fg = "#888e7b"
+mime = "vfs/{absent,stale}"
+
+[[filetype.rules]]
+bg = "#f16e65"
+fg = "#0f0f0f"
+is = "orphan"
+url = "*"
+
+[[filetype.rules]]
+fg = "#72ca68"
+is = "exec"
+url = "*"
+
+[[filetype.rules]]
+bg = "#f16e65"
+fg = "#0f0f0f"
+is = "dummy"
+url = "*"
+
+[[filetype.rules]]
+bg = "#f16e65"
+fg = "#0f0f0f"
+is = "dummy"
+url = "*/"
+
+[[filetype.rules]]
+bold = true
+fg = "#ef934d"
+url = "*/"
+
+[[filetype.rules]]
+fg = "#d9cdb5"
+url = "*"
+
+[help.action]
+fg = "#d9cdb5"
+
+[help.border]
+fg = "#ef934d"
+
+[help.chord]
+fg = "#7ec9a3"
+
+[help.hovered]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[indicator.current]
+bg = "#272a28"
+bold = true
+fg = "#f4decd"
+
+[indicator.parent]
+bg = "#272a28"
+fg = "#f4decd"
+
+[indicator.preview]
+fg = "#ef934d"
+underline = true
+
+[input.border]
+fg = "#ef934d"
+
+[input.selected]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[input.title]
+fg = "#ef934d"
+
+[input.value]
+fg = "#f4decd"
+
+[mgr]
+syntect_theme = "~/.config/yazi/caelus.tmTheme"
+
+[mgr.border_style]
+fg = "#3b403c"
+
+[mgr.count_copied]
+bg = "#72ca68"
+fg = "#0f0f0f"
+
+[mgr.count_cut]
+bg = "#f16e65"
+fg = "#0f0f0f"
+
+[mgr.count_selected]
+bg = "#ef934d"
+fg = "#0f0f0f"
+
+[mgr.cwd]
+fg = "#ef934d"
+
+[mgr.find_keyword]
+bold = true
+fg = "#e28dc6"
+underline = true
+
+[mgr.find_position]
+bold = true
+fg = "#efbf71"
+
+[mgr.marker_copied]
+bg = "#72ca68"
+fg = "#72ca68"
+
+[mgr.marker_cut]
+bg = "#f16e65"
+fg = "#f16e65"
+
+[mgr.marker_marked]
+bg = "#7ec9a3"
+fg = "#7ec9a3"
+
+[mgr.marker_selected]
+bg = "#ef934d"
+fg = "#ef934d"
+
+[mode.normal_alt]
+bg = "#1e1f1e"
+fg = "#ef934d"
+
+[mode.normal_main]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[mode.select_alt]
+bg = "#1e1f1e"
+fg = "#72ca68"
+
+[mode.select_main]
+bg = "#72ca68"
+bold = true
+fg = "#0f0f0f"
+
+[mode.unset_alt]
+bg = "#1e1f1e"
+fg = "#e28dc6"
+
+[mode.unset_main]
+bg = "#e28dc6"
+bold = true
+fg = "#0f0f0f"
+
+[notify.title_error]
+fg = "#f16e65"
+
+[notify.title_info]
+fg = "#72ca68"
+
+[notify.title_warn]
+fg = "#efbf71"
+
+[pick.active]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[pick.border]
+fg = "#ef934d"
+
+[pick.inactive]
+fg = "#d9cdb5"
+
+[spot.border]
+fg = "#ef934d"
+
+[spot.tbl_cell]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[spot.tbl_col]
+fg = "#7ec9a3"
+
+[spot.title]
+fg = "#ef934d"
+
+[status.overall]
+bg = "#1e1f1e"
+fg = "#d9cdb5"
+
+[status.perm_exec]
+fg = "#72ca68"
+
+[status.perm_read]
+fg = "#efbf71"
+
+[status.perm_sep]
+fg = "#888e7b"
+
+[status.perm_type]
+fg = "#71b4d6"
+
+[status.perm_write]
+fg = "#f16e65"
+
+[status.progress_error]
+bg = "#272a28"
+fg = "#f16e65"
+
+[status.progress_label]
+bold = true
+fg = "#f4decd"
+
+[status.progress_normal]
+bg = "#272a28"
+fg = "#ef934d"
+
+[tabs.active]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[tabs.inactive]
+bg = "#1e1f1e"
+fg = "#d9cdb5"
+
+[tasks.border]
+fg = "#ef934d"
+
+[tasks.hovered]
+bg = "#ef934d"
+bold = true
+fg = "#0f0f0f"
+
+[tasks.title]
+fg = "#ef934d"
+
+[which.border]
+fg = "#ef934d"
+
+[which.cand]
+fg = "#7ec9a3"
+
+[which.desc]
+fg = "#d9cdb5"
+
+[which.rest]
+fg = "#888e7b"
+
+[which.separator_style]
+fg = "#3b403c"

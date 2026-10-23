@@ -1,0 +1,19 @@
+# Editor/OS junk
+*~
+*.swp
+.DS_Store
+
+# Never commit secrets, even by accident
+.env
+*.env
+*.key
+*.pem
+*.p12
+*.kdbx
+*.keyx
+id_rsa*
+id_ecdsa*
+id_ed25519*
+keys.txt
+auth.json
+web-search.json

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>name</key><string>Caelus</string>
+<key>semanticClass</key><string>theme.dark.caelus</string>
+<key>settings</key><array>
+<dict><key>settings</key><dict><key>background</key><string>#0f0f0f</string><key>caret</key><string>#ef934d</string><key>findHighlight</key><string>#312318</string><key>foreground</key><string>#f4decd</string><key>gutter</key><string>#0f0f0f</string><key>gutterForeground</key><string>#585f5b</string><key>invisibles</key><string>#3b403c</string><key>lineHighlight</key><string>#1e1f1e</string><key>selection</key><string>#3b403c</string></dict></dict>
+<dict><key>scope</key><string>comment, punctuation.definition.comment</string><key>settings</key><dict><key>fontStyle</key><string>italic</string><key>foreground</key><string>#888e7b</string></dict></dict>
+<dict><key>scope</key><string>string, punctuation.definition.string</string><key>settings</key><dict><key>foreground</key><string>#72ca68</string></dict></dict>
+<dict><key>scope</key><string>string.regexp, constant.character.escape, constant.other.placeholder</string><key>settings</key><dict><key>foreground</key><string>#f4b585</string></dict></dict>
+<dict><key>scope</key><string>constant.numeric, constant.language, constant.character, constant.other, support.constant</string><key>settings</key><dict><key>foreground</key><string>#e28dc6</string></dict></dict>
+<dict><key>scope</key><string>keyword, storage, storage.type, storage.modifier, keyword.control</string><key>settings</key><dict><key>foreground</key><string>#ef934d</string></dict></dict>
+<dict><key>scope</key><string>keyword.operator, punctuation.separator, punctuation.terminator, punctuation.accessor</string><key>settings</key><dict><key>foreground</key><string>#b6b69a</string></dict></dict>
+<dict><key>scope</key><string>keyword.operator.word, keyword.operator.new, keyword.operator.logical.python</string><key>settings</key><dict><key>foreground</key><string>#ef934d</string></dict></dict>
+<dict><key>scope</key><string>punctuation, meta.brace, punctuation.section, punctuation.definition.block</string><key>settings</key><dict><key>foreground</key><string>#b6b69a</string></dict></dict>
+<dict><key>scope</key><string>entity.name.function, support.function, meta.function-call entity.name.function, variable.function</string><key>settings</key><dict><key>foreground</key><string>#efbf71</string></dict></dict>
+<dict><key>scope</key><string>entity.name.type, entity.name.class, entity.name.struct, entity.name.enum, entity.other.inherited-class, support.type, support.class, storage.type.primitive</string><key>settings</key><dict><key>foreground</key><string>#7ec9a3</string></dict></dict>
+<dict><key>scope</key><string>entity.name.namespace, entity.name.module, support.module, meta.import entity.name</string><key>settings</key><dict><key>foreground</key><string>#71b4d6</string></dict></dict>
+<dict><key>scope</key><string>variable.parameter, meta.parameter variable</string><key>settings</key><dict><key>fontStyle</key><string>italic</string><key>foreground</key><string>#d9cdb5</string></dict></dict>
+<dict><key>scope</key><string>variable.language, support.variable, variable.other.constant.builtin</string><key>settings</key><dict><key>foreground</key><string>#ef968f</string></dict></dict>
+<dict><key>scope</key><string>variable.other.member, variable.other.property, meta.property-name, support.type.property-name, entity.name.label</string><key>settings</key><dict><key>foreground</key><string>#b0d4e8</string></dict></dict>
+<dict><key>scope</key><string>variable.other.constant, entity.name.constant</string><key>settings</key><dict><key>foreground</key><string>#e28dc6</string></dict></dict>
+<dict><key>scope</key><string>entity.name.tag</string><key>settings</key><dict><key>foreground</key><string>#ef934d</string></dict></dict>
+<dict><key>scope</key><string>entity.other.attribute-name</string><key>settings</key><dict><key>foreground</key><string>#efbf71</string></dict></dict>
+<dict><key>scope</key><string>meta.decorator, meta.annotation, entity.name.function.decorator, punctuation.decorator</string><key>settings</key><dict><key>foreground</key><string>#7ec9a3</string></dict></dict>
+<dict><key>scope</key><string>entity.name.function.preprocessor, meta.preprocessor, keyword.control.import, keyword.control.directive</string><key>settings</key><dict><key>foreground</key><string>#f4b585</string></dict></dict>
+<dict><key>scope</key><string>markup.heading, entity.name.section, punctuation.definition.heading</string><key>settings</key><dict><key>fontStyle</key><string>bold</string><key>foreground</key><string>#ef934d</string></dict></dict>
+<dict><key>scope</key><string>markup.bold</string><key>settings</key><dict><key>fontStyle</key><string>bold</string></dict></dict>
+<dict><key>scope</key><string>markup.italic</string><key>settings</key><dict><key>fontStyle</key><string>italic</string></dict></dict>
+<dict><key>scope</key><string>markup.underline.link, string.other.link, markup.link</string><key>settings</key><dict><key>foreground</key><string>#71b4d6</string></dict></dict>
+<dict><key>scope</key><string>markup.raw, markup.inline.raw, markup.fenced_code</string><key>settings</key><dict><key>foreground</key><string>#72ca68</string></dict></dict>
+<dict><key>scope</key><string>markup.quote</string><key>settings</key><dict><key>fontStyle</key><string>italic</string><key>foreground</key><string>#9a9c8b</string></dict></dict>
+<dict><key>scope</key><string>markup.list punctuation.definition.list</string><key>settings</key><dict><key>foreground</key><string>#ef934d</string></dict></dict>
+<dict><key>scope</key><string>markup.inserted, meta.diff.header.to-file, punctuation.definition.inserted</string><key>settings</key><dict><key>foreground</key><string>#72ca68</string></dict></dict>
+<dict><key>scope</key><string>markup.deleted, meta.diff.header.from-file, punctuation.definition.deleted</string><key>settings</key><dict><key>foreground</key><string>#f16e65</string></dict></dict>
+<dict><key>scope</key><string>markup.changed, punctuation.definition.changed</string><key>settings</key><dict><key>foreground</key><string>#efbf71</string></dict></dict>
+<dict><key>scope</key><string>meta.diff.range, meta.diff.header</string><key>settings</key><dict><key>foreground</key><string>#71b4d6</string></dict></dict>
+<dict><key>scope</key><string>invalid, invalid.illegal</string><key>settings</key><dict><key>fontStyle</key><string>underline</string><key>foreground</key><string>#f16e65</string></dict></dict>
+<dict><key>scope</key><string>invalid.deprecated</string><key>settings</key><dict><key>fontStyle</key><string>underline</string><key>foreground</key><string>#efbf71</string></dict></dict>
+</array></dict></plist>

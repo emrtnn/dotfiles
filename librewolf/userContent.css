@@ -1,0 +1,376 @@
+/* ==========================================================================
+ * LibreWolf · Caelus TUI — userContent.css  (internal about: pages)
+ *
+ * Re-skins about:preferences, about:config, about:addons, about:profiles,
+ * about:newtab, error pages… by overriding Firefox's design tokens.
+ * Palette: the Caelus table in ~/dotfiles/README.md (keep in sync).
+ *
+ * Install: copy or symlink into <profile>/chrome/ (see "LibreWolf theme" in
+ * ~/dotfiles/README.md).
+ *
+ * about:blank and about:srcdoc are excluded on purpose: websites build
+ * iframes (editors, embeds) on them and must not inherit these colours.
+ * Reader view and DevTools keep their own themes.
+ * ========================================================================== */
+
+@-moz-document regexp("^about:(?!blank|srcdoc|reader|devtools).*") {
+
+  /* ---- palette & roles ---------------------------------------------------- */
+  :root {
+    --cae-bg:          #0f0f0f;  /* bg */
+    --cae-surface:     #1e1f1e;  /* gray1 */
+    --cae-raised:      #272a28;  /* gray2 */
+    --cae-line:        #3b403c;  /* gray3 */
+    --cae-muted:       #888e7b;  /* gray6 */
+    --cae-fg-dim:      #d9cdb5;  /* gray9 */
+    --cae-fg:          #f4decd;  /* fg */
+    --cae-bright:      #f4decd;  /* fg (selected text) */
+    --cae-orange:      #ef934d;
+    --cae-orange-light: #f4b585;
+    --cae-yellow:      #efbf71;
+    --cae-red:         #f16e65;
+    --cae-green:       #72ca68;
+    --cae-cyan:        #7ec9a3;
+    --cae-blue:        #71b4d6;
+    --cae-magenta:     #e28dc6;
+    --cae-magenta-light: #ebadd6;
+
+    --cae-accent:        var(--cae-orange);
+    --cae-accent-hover:  var(--cae-orange-light);
+    --cae-accent-active: color-mix(in srgb, var(--cae-orange) 80%, var(--cae-bg));
+    --cae-accent-2:      var(--cae-blue);
+    --cae-on-accent:     var(--cae-bg);
+    --cae-stripe:        color-mix(in srgb, var(--cae-surface) 55%, var(--cae-bg));
+    --cae-font: "Iosevka Nerd Font Mono", "Iosevka Nerd Font", "JetBrainsMono Nerd Font Mono", monospace;
+
+    color-scheme: dark !important;
+    scrollbar-color: var(--cae-line) var(--cae-bg) !important;
+  }
+
+  /* ---- global: monospace, square, flat ------------------------------------ */
+  * {
+    font-family: var(--cae-font) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  ::selection {
+    background-color: var(--cae-raised) !important;
+    color: var(--cae-bright) !important;
+  }
+
+  html, body {
+    background-color: var(--cae-bg) !important;
+    color: var(--cae-fg) !important;
+  }
+
+  /* ---- design tokens -------------------------------------------------------
+   * Set on every element (*) because components re-declare tokens on their
+   * shadow hosts; user !important beats those author rules. */
+  * {
+    /* palette ramps → caelus (blue ramps carry the accent, as Firefox uses
+     * them for its own accent colour) */
+    --color-blue-05: var(--cae-accent-hover) !important;  --color-blue-10: var(--cae-accent-hover) !important;
+    --color-blue-20: var(--cae-accent-hover) !important;  --color-blue-30: var(--cae-accent) !important;
+    --color-blue-40: var(--cae-accent) !important;   --color-blue-50: var(--cae-accent) !important;
+    --color-blue-60: var(--cae-accent) !important;   --color-blue-70: var(--cae-accent-active) !important;
+    --color-blue-80: var(--cae-accent-active) !important;    --color-blue-90: var(--cae-accent-active) !important;
+    --color-cyan-10: var(--cae-cyan) !important;   --color-cyan-20: var(--cae-cyan) !important;
+    --color-cyan-30: var(--cae-cyan) !important;   --color-cyan-40: var(--cae-cyan) !important;
+    --color-cyan-50: var(--cae-cyan) !important;   --color-cyan-60: var(--cae-cyan) !important;
+    --color-cyan-70: var(--cae-cyan) !important;   --color-cyan-80: var(--cae-cyan) !important;
+    --color-green-05: var(--cae-green) !important; --color-green-10: var(--cae-green) !important;
+    --color-green-20: var(--cae-green) !important; --color-green-30: var(--cae-green) !important;
+    --color-green-40: var(--cae-green) !important; --color-green-50: var(--cae-green) !important;
+    --color-green-60: var(--cae-green) !important; --color-green-70: var(--cae-green) !important;
+    --color-green-80: var(--cae-green) !important;
+    --color-red-05: var(--cae-red) !important;     --color-red-10: var(--cae-red) !important;
+    --color-red-20: var(--cae-red) !important;     --color-red-30: var(--cae-red) !important;
+    --color-red-40: var(--cae-red) !important;     --color-red-50: var(--cae-red) !important;
+    --color-red-60: var(--cae-red) !important;     --color-red-70: var(--cae-red) !important;
+    --color-red-80: var(--cae-red) !important;
+    --color-pink-10: var(--cae-magenta-light) !important;   --color-pink-20: var(--cae-magenta-light) !important;
+    --color-pink-30: var(--cae-magenta-light) !important;   --color-pink-40: var(--cae-magenta-light) !important;
+    --color-pink-50: var(--cae-magenta-light) !important;   --color-pink-60: var(--cae-magenta-light) !important;
+    --color-pink-70: var(--cae-magenta-light) !important;
+    --color-orange-10: var(--cae-orange) !important; --color-orange-20: var(--cae-orange) !important;
+    --color-orange-30: var(--cae-orange) !important; --color-orange-40: var(--cae-orange) !important;
+    --color-orange-50: var(--cae-orange) !important; --color-orange-60: var(--cae-orange) !important;
+    --color-orange-70: var(--cae-orange) !important;
+    --color-yellow-10: var(--cae-yellow) !important; --color-yellow-20: var(--cae-yellow) !important;
+    --color-yellow-30: var(--cae-yellow) !important; --color-yellow-40: var(--cae-yellow) !important;
+    --color-yellow-50: var(--cae-yellow) !important; --color-yellow-60: var(--cae-yellow) !important;
+    --color-purple-10: var(--cae-magenta) !important; --color-purple-20: var(--cae-magenta) !important;
+    --color-purple-30: var(--cae-magenta) !important; --color-purple-40: var(--cae-magenta) !important;
+    --color-purple-50: var(--cae-magenta) !important; --color-purple-60: var(--cae-magenta) !important;
+    --color-purple-70: var(--cae-magenta) !important;
+    --color-violet-10: var(--cae-magenta) !important; --color-violet-20: var(--cae-magenta) !important;
+    --color-violet-30: var(--cae-magenta) !important; --color-violet-40: var(--cae-magenta) !important;
+    --color-violet-50: var(--cae-magenta) !important; --color-violet-60: var(--cae-magenta) !important;
+    --color-violet-70: var(--cae-magenta) !important;
+
+    /* accents & links */
+    --color-accent-primary:          var(--cae-accent) !important;
+    --color-accent-primary-hover:    var(--cae-accent-hover) !important;
+    --color-accent-primary-active:   var(--cae-accent-active) !important;
+    --color-accent-primary-selected: var(--cae-accent) !important;
+    --color-accent-attention:        var(--cae-green) !important;
+    --link-color:          var(--cae-accent) !important;
+    --link-color-hover:    var(--cae-accent-hover) !important;
+    --link-color-active:   var(--cae-accent-active) !important;
+    --link-color-visited:  var(--cae-orange-light) !important;
+    --focus-outline-color: var(--cae-accent) !important;
+    --focus-outline:       1px solid var(--cae-accent) !important;
+
+    /* surfaces */
+    --background-color-canvas:         var(--cae-bg) !important;
+    --background-color-box:            var(--cae-bg) !important;
+    --background-color-box-info:       var(--cae-surface) !important;
+    --background-color-information:    var(--cae-surface) !important;
+    --background-color-success:        var(--cae-surface) !important;
+    --background-color-warning:        var(--cae-surface) !important;
+    --background-color-critical:       var(--cae-surface) !important;
+    --background-color-list-item-hover: var(--cae-surface) !important;
+    --background-color-overlay:        color-mix(in srgb, var(--cae-bg) 80%, transparent) !important;
+    --background-color-dimmed:         var(--cae-surface) !important;
+    --background-color-dimmed-further: var(--cae-raised) !important;
+
+    /* text */
+    --text-color:                         var(--cae-fg) !important;
+    --text-color-deemphasized:            var(--cae-muted) !important;
+    --text-color-disabled:                var(--cae-line) !important;
+    --text-color-error:                   var(--cae-red) !important;
+    --text-color-list-item-hover:         var(--cae-bright) !important;
+    --text-color-accent-primary-selected: var(--cae-on-accent) !important;
+
+    /* borders */
+    --border-color:                    var(--cae-raised) !important;
+    --border-color-deemphasized:       var(--cae-surface) !important;
+    --border-color-interactive:        var(--cae-line) !important;
+    --border-color-interactive-hover:  var(--cae-muted) !important;
+    --border-color-interactive-active: var(--cae-accent) !important;
+    --border-color-selected:           var(--cae-accent) !important;
+    --border-color-error:              var(--cae-red) !important;
+
+    /* icons */
+    --icon-color:             var(--cae-fg-dim) !important;
+    --icon-color-information: var(--cae-accent) !important;
+    --icon-color-success:     var(--cae-green) !important;
+    --icon-color-warning:     var(--cae-yellow) !important;
+    --icon-color-critical:    var(--cae-red) !important;
+
+    /* boxes / cards (bordered panes, like a TUI) */
+    --card-background-color: var(--cae-bg) !important;
+    --card-border-color:     var(--cae-raised) !important;
+    --card-border:           1px solid var(--cae-raised) !important;
+    --box-border-color:      var(--cae-raised) !important;
+    --box-button-background-color:        var(--cae-bg) !important;
+    --box-button-background-color-hover:  var(--cae-surface) !important;
+    --box-button-background-color-active: var(--cae-raised) !important;
+
+    /* buttons — hover is TUI "reverse video": accent block, dark text */
+    --button-border:                    1px solid var(--cae-raised) !important;
+    --button-background-color:          var(--cae-surface) !important;
+    --button-background-color-hover:    var(--cae-accent) !important;
+    --button-background-color-active:   var(--cae-accent-active) !important;
+    --button-background-color-selected: var(--cae-raised) !important;
+    --button-text-color:                var(--cae-fg) !important;
+    --button-text-color-hover:          var(--cae-on-accent) !important;
+    --button-text-color-active:         var(--cae-on-accent) !important;
+    --button-border-color:              var(--cae-raised) !important;
+    --button-border-color-hover:        var(--cae-accent) !important;
+    --button-border-color-active:       var(--cae-accent-active) !important;
+    --button-background-color-ghost-hover:  var(--cae-surface) !important;
+    --button-background-color-ghost-active: var(--cae-raised) !important;
+    --button-background-color-primary:        var(--cae-accent) !important;
+    --button-background-color-primary-hover:  var(--cae-accent-hover) !important;
+    --button-background-color-primary-active: var(--cae-accent-active) !important;
+    --button-text-color-primary:        var(--cae-on-accent) !important;
+    --button-text-color-primary-hover:  var(--cae-on-accent) !important;
+    --button-text-color-primary-active: var(--cae-on-accent) !important;
+    --button-border-color-primary:      transparent !important;
+    --button-background-color-destructive:       var(--cae-red) !important;
+    --button-background-color-destructive-hover: color-mix(in srgb, var(--cae-red) 80%, var(--cae-fg)) !important;
+    --button-text-color-destructive:             var(--cae-on-accent) !important;
+
+    /* inputs, toggles, checkboxes */
+    --input-text-background-color: var(--cae-surface) !important;
+    --input-text-color:            var(--cae-fg) !important;
+    --input-text-border-color:     var(--cae-raised) !important;
+    --input-border-color:          var(--cae-line) !important;
+    --toggle-background-color:          var(--cae-surface) !important;
+    --toggle-background-color-hover:    var(--cae-raised) !important;
+    --toggle-border-color:              var(--cae-line) !important;
+    --toggle-dot-background-color:      var(--cae-muted) !important;
+    --toggle-dot-background-color-hover: var(--cae-fg-dim) !important;
+    --toggle-background-color-pressed:  var(--cae-accent) !important;
+    --toggle-background-color-pressed-hover: var(--cae-accent-hover) !important;
+    --toggle-dot-background-color-on-pressed: var(--cae-on-accent) !important;
+
+    /* side navigation (about:preferences, about:addons, …) */
+    --page-nav-button-background-color:          transparent !important;
+    --page-nav-button-text-color:                var(--cae-fg-dim) !important;
+    --page-nav-button-text-color-hover:          var(--cae-bright) !important;
+    --page-nav-button-background-color-hover:    var(--cae-surface) !important;
+    --page-nav-button-background-color-active:   var(--cae-raised) !important;
+    --page-nav-button-background-color-selected: var(--cae-accent) !important;
+    --page-nav-button-text-color-selected:       var(--cae-on-accent) !important;
+    --page-nav-button-indicator-background-color: transparent !important;
+    --page-nav-border-color:      var(--cae-raised) !important;
+    --page-nav-hr-background-color: var(--cae-raised) !important;
+
+    /* tables (about:config, about:support, about:profiles…) */
+    --table-background-color:               var(--cae-bg) !important;
+    --table-border-color:                   var(--cae-raised) !important;
+    --table-header-background-color:        var(--cae-surface) !important;
+    --table-header-text-color:              var(--cae-fg) !important;
+    --table-row-background-color:           var(--cae-bg) !important;
+    --table-row-background-color-alternate: var(--cae-stripe) !important;
+
+    /* popups & menus inside pages */
+    --panel-background-color:      var(--cae-bg) !important;
+    --panel-text-color:            var(--cae-fg) !important;
+    --panel-border-color:          var(--cae-line) !important;
+    --panel-list-background-color: var(--cae-bg) !important;
+    --panel-list-border-color:     var(--cae-line) !important;
+    --popup-background-color:      var(--cae-bg) !important;
+    --popup-border-color:          var(--cae-line) !important;
+
+    /* legacy in-content tokens still used by some pages */
+    --in-content-page-background:  var(--cae-bg) !important;
+    --in-content-page-color:       var(--cae-fg) !important;
+    --in-content-box-background:   var(--cae-bg) !important;
+    --in-content-box-border-color: var(--cae-raised) !important;
+    --in-content-border-color:     var(--cae-raised) !important;
+    --in-content-item-hover:       var(--cae-surface) !important;
+    --in-content-item-selected:    var(--cae-accent) !important;
+    --in-content-item-selected-text: var(--cae-on-accent) !important;
+    --in-content-primary-button-background: var(--cae-accent) !important;
+    --in-content-primary-button-text-color: var(--cae-on-accent) !important;
+    --in-content-accent-color:     var(--cae-accent) !important;
+  }
+
+  /* ---- widgets ------------------------------------------------------------ */
+  a, .text-link {
+    color: var(--cae-accent) !important;
+  }
+
+  a:hover, .text-link:hover {
+    color: var(--cae-accent-hover) !important;
+  }
+
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]),
+  textarea,
+  select {
+    background-color: var(--cae-surface) !important;
+    color: var(--cae-fg) !important;
+    border: 1px solid var(--cae-raised) !important;
+  }
+
+  input:not([type="checkbox"], [type="radio"]):focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    border-color: var(--cae-accent) !important;
+    outline: none !important;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--cae-accent) !important;
+  }
+
+  hr {
+    border-color: var(--cae-raised) !important;
+    background-color: var(--cae-raised) !important;
+  }
+
+  /* Selected side-nav entry: solid accent bar with dark text */
+  button[role="tab"][selected],
+  .category[selected],
+  richlistitem[selected] {
+    background-color: var(--cae-accent) !important;
+    color: var(--cae-on-accent) !important;
+  }
+
+  button[role="tab"][selected] .page-nav-icon,
+  .category[selected] .category-icon {
+    fill: var(--cae-on-accent) !important;
+  }
+
+  /* Side-nav entries that are links (support pages, add-ons…) look like
+   * the other entries instead of hyperlinks. */
+  a.moz-page-nav-link,
+  .sidebar-footer-link {
+    color: var(--cae-fg-dim) !important;
+  }
+
+  a.moz-page-nav-link:hover,
+  .sidebar-footer-link:hover {
+    color: var(--cae-bright) !important;
+  }
+
+  /* ---- about:config -------------------------------------------------------- */
+  #prefs tr:hover > :is(th, td) {
+    background-color: var(--cae-raised) !important;
+  }
+
+  #prefs tr.has-user-value > th {
+    color: var(--cae-accent) !important;
+    font-weight: bold !important;
+  }
+
+  /* ---- about:addons -------------------------------------------------------- */
+  addon-card .card,
+  .addon.card {
+    background-color: var(--cae-bg) !important;
+    border: 1px solid var(--cae-raised) !important;
+  }
+
+  addon-card .card:hover {
+    border-color: var(--cae-accent) !important;
+  }
+
+  /* ---- new tab / home ------------------------------------------------------- */
+  :root {
+    --newtab-background-color:           var(--cae-bg) !important;
+    --newtab-background-color-secondary: var(--cae-surface) !important;
+    --newtab-text-primary-color:         var(--cae-fg) !important;
+    --newtab-text-secondary-color:       var(--cae-muted) !important;
+    --newtab-primary-action-background:  var(--cae-accent) !important;
+    --newtab-primary-element-text-color: var(--cae-on-accent) !important;
+    --newtab-element-hover-color:        var(--cae-surface) !important;
+    --newtab-element-active-color:       var(--cae-raised) !important;
+    --newtab-border-color:               var(--cae-raised) !important;
+    --newtab-button-background:          var(--cae-surface) !important;
+    --newtab-button-hover-background:    var(--cae-raised) !important;
+    --newtab-wallpaper-color:            var(--cae-bg) !important;
+  }
+
+  .search-handoff-button,
+  .search-wrapper input,
+  .top-site-outer .tile {
+    background-color: var(--cae-surface) !important;
+    border: 1px solid var(--cae-raised) !important;
+    color: var(--cae-fg) !important;
+  }
+
+  .search-wrapper input:focus,
+  .search-handoff-button:focus-visible {
+    border-color: var(--cae-accent) !important;
+  }
+
+  .top-site-outer:hover .tile {
+    border-color: var(--cae-accent) !important;
+  }
+}
+
+/* ---- optional: square corners on every website ------------------------------
+ * The video does this with the Stylus extension.  It works here without an
+ * extension, but any site can detect it (getComputedStyle), which makes you
+ * more fingerprintable — so it is opt-in.  Remove the comment markers to use.
+ *
+ * @-moz-document regexp("^(https?|file):.*") {
+ *   *, *::before, *::after { border-radius: 0 !important; }
+ * }
+ */

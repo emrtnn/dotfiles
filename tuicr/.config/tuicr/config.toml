@@ -1,0 +1,28 @@
+theme = "caelus"
+
+diff_view = "side-by-side"
+ignore_whitespace = false
+show_file_list = true
+mouse = true
+leader = ";"
+comment_vim = true
+comment_tab_width = 4
+wrap = false
+cursor_line = true
+transparent_background = true
+scroll_offset = 5
+no_update_check = false
+review_watch_interval_ms = 1000
+
+backend = "libgit2"
+
+comment_types = [
+  { id = "note", label = "question", definition = "ask for clarification", color = "blue" },
+  { id = "suggestion", definition = "possible improvements", color = "yellow" },
+  { id = "issue", definition = "problems to fix", color = "red" },
+  { id = "praise", definition = "positive feedback", color = "green" },
+  { id = "nit", label = "nitpick", definition = "small optional tweaks", color = "magenta" },
+]
+
+[forge]
+comment_type_prefix = true
