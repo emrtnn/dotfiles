@@ -1,0 +1,64 @@
+# Commits and tags are signed with ~/.ssh/id_ed25519.pub via gcr-ssh-agent.
+
+[alias]
+	fpush = "push --force-with-lease --force-if-includes"
+	plog = "log --graph --pretty=format:'%C(yellow)%h (%Creset%Cgreen%p%Creset%C(yellow))%Creset -%Cred%d%Creset %s %Cgreen(%cr)%Creset %C(bold blue)<%an>%Creset' --abbrev-commit --all"
+
+[branch]
+	sort = "-committerdate"
+
+[color]
+	ui = "auto"
+
+[commit]
+	gpgSign = true
+	verbose = true
+
+[core]
+	autocrlf = "input"
+	editor = "nvim"
+
+[diff]
+	algorithm = "histogram"
+	colorMoved = "default"
+
+[fetch]
+	prune = true
+
+[gpg]
+	format = "ssh"
+
+[gpg "ssh"]
+	allowedSignersFile = "~/.config/git/allowed_signers"
+
+[init]
+	defaultBranch = "master"
+
+[log]
+	date = "relative"
+
+[merge]
+	conflictstyle = "zdiff3"
+
+[pull]
+	rebase = true
+
+[push]
+	default = "simple"
+
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+
+[rerere]
+	autoUpdate = true
+	enabled = true
+
+[tag]
+	gpgSign = true
+
+[user]
+	email = "emrtnn@proton.me"
+	name = "emrtnn"
+	signingKey = "~/.ssh/id_ed25519.pub"

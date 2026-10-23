@@ -1,0 +1,18 @@
+[color-palette]
+palette = ["#ef934dff", "#f16e65ff", "#efbf71ff", "#72ca68ff", "#71b4d6ff", "#e28dc6ff", "#f4decdff"]
+
+[font]
+family = "sans-serif"
+style = "Regular"
+
+[general]
+actions-on-enter = ["save-to-clipboard"]
+actions-on-escape = ["exit"]
+annotation-size-factor = 1
+brush-smooth-history-size = 5
+copy-command = "wl-copy"
+corner-roundness = 8
+early-exit = true
+initial-tool = "brush"
+no-window-decoration = true
+output-filename = "~/Pictures/Screenshots/satty-%Y%m%d-%H%M%S.png"

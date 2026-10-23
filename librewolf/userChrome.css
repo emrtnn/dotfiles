@@ -1,0 +1,532 @@
+/* ==========================================================================
+ * LibreWolf · Caelus TUI — userChrome.css  (browser UI)
+ *
+ * Flat, square, monospace chrome in the spirit of a terminal UI.
+ * Palette: the Caelus table in ~/dotfiles/README.md (keep in sync).
+ * Accent follows the desktop: mango focus_color / tmux active = orange.
+ *
+ * Install: copy or symlink into <profile>/chrome/, together with user.js
+ * into <profile>/ (see "LibreWolf theme" in ~/dotfiles/README.md).
+ * Restart LibreWolf after a change.  To live-test, set the Browser Toolbox
+ * prefs in user.js to true first (off by default), then Ctrl+Shift+Alt+I.
+ * ========================================================================== */
+
+/* ---- 1. Palette & knobs ------------------------------------------------- */
+:root {
+  --cae-bg: #0f0f0f; /* bg */
+  --cae-surface: #1e1f1e; /* gray1 */
+  --cae-raised: #272a28; /* gray2 */
+  --cae-line: #3b403c; /* gray3 */
+  --cae-muted: #888e7b; /* gray6 */
+  --cae-fg-dim: #d9cdb5; /* gray9 */
+  --cae-fg: #f4decd; /* fg */
+  --cae-bright: #f4decd; /* fg (selected text) */
+  --cae-orange: #ef934d;
+  --cae-orange-light: #f4b585;
+  --cae-yellow: #efbf71;
+  --cae-red: #f16e65;
+  --cae-green: #72ca68;
+  --cae-cyan: #7ec9a3;
+  --cae-blue: #71b4d6;
+  --cae-magenta: #e28dc6;
+  --cae-magenta-light: #ebadd6;
+
+  --cae-accent: var(--cae-orange);
+  --cae-accent-hover: var(--cae-orange-light);
+  --cae-accent-active: color-mix(in srgb, var(--cae-orange) 80%, var(--cae-bg));
+  --cae-accent-2: var(--cae-blue);
+  --cae-on-accent: var(--cae-bg);
+
+  --cae-font:
+    "JetBrainsMono Nerd Font Mono", "Iosevka Nerd Font Mono",
+    "Iosevka Nerd Font", monospace;
+  --cae-font-size: 14px;
+  --cae-border: 1px solid var(--cae-raised);
+}
+
+/* ---- 2. Global: monospace, square, flat --------------------------------- */
+* {
+  font-family: var(--cae-font) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+:root {
+  font-size: var(--cae-font-size) !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cae-line) transparent;
+}
+
+::selection {
+  background-color: var(--cae-raised) !important;
+  color: var(--cae-bright) !important;
+}
+
+/* ---- 3. Design-token overrides ------------------------------------------ */
+/* Firefox (Nova) builds the UI from CSS custom properties; overriding them
+ * re-skins most widgets at once.  The few shadow hosts that re-declare
+ * tokens (menupopup, panel, moz-button, …) are listed explicitly. */
+:root,
+menupopup,
+panel,
+panel-list,
+moz-button,
+moz-button-group,
+menulist,
+arrowscrollbox,
+moz-message-bar,
+moz-badge,
+moz-checkbox {
+  /* accents */
+  --color-accent-primary: var(--cae-accent) !important;
+  --color-accent-primary-hover: var(--cae-accent-hover) !important;
+  --color-accent-primary-active: var(--cae-accent-active) !important;
+  --color-accent-primary-selected: var(--cae-accent) !important;
+  --color-accent-attention: var(--cae-green) !important;
+  --focus-outline-color: var(--cae-accent) !important;
+  --focus-outline: 1px solid var(--cae-accent) !important;
+  --focus-outline-offset: -1px !important;
+  --link-color: var(--cae-accent) !important;
+  --link-color-hover: var(--cae-accent-hover) !important;
+  --link-color-active: var(--cae-accent-active) !important;
+
+  /* surfaces & text */
+  --background-color-canvas: var(--cae-bg) !important;
+  --background-color-box: var(--cae-bg) !important;
+  --text-color: var(--cae-fg) !important;
+  --text-color-deemphasized: var(--cae-muted) !important;
+  --border-color: var(--cae-raised) !important;
+  --border-color-deemphasized: var(--cae-surface) !important;
+  --border-color-interactive: var(--cae-line) !important;
+  --border-color-selected: var(--cae-accent) !important;
+
+  /* toolbox / toolbars */
+  --toolbox-background-color: var(--cae-bg) !important;
+  --toolbox-background-color-inactive: var(--cae-bg) !important;
+  --toolbox-text-color: var(--cae-fg) !important;
+  --toolbox-text-color-inactive: var(--cae-fg-dim) !important;
+  --toolbar-background-color: var(--cae-bg) !important;
+  --toolbar-text-color: var(--cae-fg) !important;
+  --toolbarseparator-color: var(--cae-raised) !important;
+  --toolbarbutton-icon-fill: var(--cae-fg-dim) !important;
+  --toolbarbutton-icon-fill-attention: var(--cae-accent) !important;
+  --toolbarbutton-background-color-hover: var(--cae-surface) !important;
+  --toolbarbutton-background-color-active: var(--cae-raised) !important;
+  --toolbarbutton-border-radius: 0 !important;
+  --toolbarbutton-badge-background-color: var(--cae-red) !important;
+  --chrome-content-separator-color: var(--cae-raised) !important;
+  --tabs-navbar-separator-color: var(--cae-raised) !important;
+  --content-area-shadow: none !important;
+
+  /* address bar */
+  --toolbar-field-background-color: var(--cae-surface) !important;
+  --toolbar-field-background-color-focus: var(--cae-bg) !important;
+  --toolbar-field-text-color: var(--cae-fg) !important;
+  --toolbar-field-text-color-focus: var(--cae-fg) !important;
+  --toolbar-field-border-color: var(--cae-raised) !important;
+  --toolbar-field-border-color-focus: var(--cae-accent) !important;
+  --urlbar-background-color: var(--cae-surface) !important;
+  --urlbar-background-color-focus: var(--cae-bg) !important;
+  --urlbar-border-radius: 0 !important;
+  --urlbar-box-background-color: var(--cae-raised) !important;
+  --urlbar-box-background-color-hover: var(--cae-line) !important;
+  --urlbar-box-background-color-active: var(--cae-line) !important;
+  --urlbar-box-background-color-focus: var(--cae-raised) !important;
+  --urlbar-box-text-color: var(--cae-fg) !important;
+  --urlbar-icon-fill-opacity: 1 !important;
+  --urlbarview-background-color-hover: var(--cae-surface) !important;
+  --urlbarview-background-color-selected: var(--cae-raised) !important;
+  --urlbarview-text-color-selected: var(--cae-bright) !important;
+  --urlbarview-text-color-secondary: var(--cae-muted) !important;
+  --urlbarview-text-color-action: var(--cae-accent-2) !important;
+  --urlbarview-separator-color: var(--cae-raised) !important;
+  --urlbarview-border-radius: 0 !important;
+
+  /* tabs */
+  --tab-background-color: transparent !important;
+  --tab-background-color-hover: var(--cae-surface) !important;
+  --tab-background-color-selected: var(--cae-surface) !important;
+  --tab-text-color: var(--cae-fg-dim) !important;
+  --tab-text-color-hover: var(--cae-fg) !important;
+  --tab-text-color-selected: var(--cae-bright) !important;
+  --tab-border-color: transparent !important;
+  --tab-border-color-hover: transparent !important;
+  --tab-border-color-selected: var(--cae-accent) !important;
+  --tab-border-color-selected-leading: var(--cae-accent) !important;
+  --tab-border-color-selected-trailing: var(--cae-accent) !important;
+  --tab-border-color-accent: linear-gradient(
+    var(--cae-accent),
+    var(--cae-accent)
+  ) !important;
+  --tab-box-shadow-selected: none !important;
+  --tab-border-radius: 0 !important;
+  --tab-loading-fill: var(--cae-accent) !important;
+  --tab-attention-dot-color: var(--cae-green) !important;
+  --tab-close-button-background-color-hover: var(--cae-raised) !important;
+  /* tab-group colours → caelus */
+  --tab-group-blue: var(--cae-blue) !important;
+  --tab-group-cyan: var(--cae-cyan) !important;
+  --tab-group-green: var(--cae-green) !important;
+  --tab-group-purple: var(--cae-magenta) !important;
+  --tab-group-pink: var(--cae-magenta-light) !important;
+  --tab-group-red: var(--cae-red) !important;
+  --tab-group-orange: var(--cae-orange) !important;
+  --tab-group-yellow: var(--cae-yellow) !important;
+  --tab-group-gray: var(--cae-muted) !important;
+
+  /* sidebar */
+  --sidebar-background-color: var(--cae-bg) !important;
+  --sidebar-text-color: var(--cae-fg) !important;
+  --sidebar-border-color: var(--cae-raised) !important;
+  --sidebar-box-background: var(--cae-bg) !important;
+  --sidebar-box-color: var(--cae-fg) !important;
+  --sidebar-box-border: none !important;
+
+  /* panels, menus, popups */
+  --panel-background-color: var(--cae-bg) !important;
+  --panel-text-color: var(--cae-fg) !important;
+  --panel-border-color: var(--cae-line) !important;
+  --panel-separator-color: var(--cae-raised) !important;
+  --panel-border-radius: 0 !important;
+  --panel-box-shadow: none !important;
+  --panel-menuitem-border-radius: 0 !important;
+  --menuitem-border-radius: 0 !important;
+  --panel-icon-fill: var(--cae-fg-dim) !important;
+  --popup-background-color: var(--cae-bg) !important;
+  --popup-border-color: var(--cae-line) !important;
+  --popup-border-radius: 0 !important;
+  --popup-box-shadow: none !important;
+  --panel-list-background-color: var(--cae-bg) !important;
+  --panel-list-border-color: var(--cae-line) !important;
+  --panel-list-text-color: var(--cae-fg) !important;
+
+  /* buttons & inputs */
+  --button-border-radius: 0 !important;
+  --button-background-color: var(--cae-surface) !important;
+  --button-background-color-hover: var(--cae-raised) !important;
+  --button-background-color-active: var(--cae-line) !important;
+  --button-text-color: var(--cae-fg) !important;
+  --button-border-color: var(--cae-raised) !important;
+  --button-background-color-ghost-hover: var(--cae-surface) !important;
+  --button-background-color-ghost-active: var(--cae-raised) !important;
+  --button-background-color-primary: var(--cae-accent) !important;
+  --button-background-color-primary-hover: var(--cae-accent-hover) !important;
+  --button-background-color-primary-active: var(--cae-accent-active) !important;
+  --button-text-color-primary: var(--cae-on-accent) !important;
+  --button-text-color-primary-hover: var(--cae-on-accent) !important;
+  --button-text-color-primary-active: var(--cae-on-accent) !important;
+  --button-border-color-primary: transparent !important;
+  --input-text-background-color: var(--cae-surface) !important;
+  --input-text-color: var(--cae-fg) !important;
+  --input-border-color: var(--cae-line) !important;
+}
+
+/* ---- 4. Layout: navbar is the only thing on top ------------------------- */
+/* Hide the horizontal tab strip only while tabs live in the sidebar, so
+ * switching back to horizontal tabs never leaves you tab-less. */
+#TabsToolbar:not(:has(#tabbrowser-tabs)) {
+  display: none !important;
+}
+
+/* Sidebar panels (history, bookmarks, extension sidebars): no title bar. */
+#sidebar-header,
+#sidebar-panel-header,
+sidebar-panel-header {
+  display: none !important;
+}
+
+#sidebar-box {
+  padding-inline-start: 0 !important;
+  background-color: var(--cae-bg) !important;
+}
+
+#navigator-toolbox {
+  background-color: var(--cae-bg) !important;
+  border-bottom: var(--cae-border) !important;
+}
+
+#nav-bar {
+  background: var(--cae-bg) !important;
+  border: none !important;
+  padding-block: 2px !important;
+}
+
+#PersonalToolbar {
+  background: var(--cae-bg) !important;
+  border-top: var(--cae-border) !important;
+}
+
+/* Flat, square toolbar buttons with a subtle hover block. */
+:is(#nav-bar, #PersonalToolbar)
+  .toolbarbutton-1
+  > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack, .toolbarbutton-text) {
+  border-radius: 0 !important;
+}
+
+#tabbrowser-tabbox,
+#tabbrowser-tabpanels {
+  background-color: var(--cae-bg) !important;
+}
+
+/* ---- 5. Address bar ------------------------------------------------------ */
+#urlbar .urlbar-background {
+  background-color: var(--cae-surface) !important;
+  border: 1px solid var(--cae-raised) !important;
+  outline: none !important;
+}
+
+#urlbar:is([focused], [open]) .urlbar-background {
+  background-color: var(--cae-bg) !important;
+  border-color: var(--cae-accent) !important;
+}
+
+#urlbar .urlbar-input {
+  color: var(--cae-fg) !important;
+}
+
+#urlbar .urlbar-input::placeholder {
+  color: var(--cae-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Results list: a plain bordered box, selection = highlighted line. */
+.urlbarView {
+  border-top: var(--cae-border) !important;
+}
+
+#urlbar[open] .urlbarView-background {
+  background-color: var(--cae-bg) !important;
+  border: 1px solid var(--cae-line) !important;
+}
+
+.urlbarView-row[selected] > .urlbarView-row-inner,
+.urlbarView-row-inner[selected] {
+  background-color: var(--cae-raised) !important;
+  box-shadow: inset 2px 0 0 var(--cae-accent) !important;
+}
+
+.urlbarView-url,
+.urlbarView-action {
+  color: var(--cae-accent-2) !important;
+}
+
+.urlbarView-row[selected] :is(.urlbarView-url, .urlbarView-action) {
+  color: var(--cae-accent-2) !important;
+}
+
+/* ---- 6. Vertical tabs ----------------------------------------------------- */
+#vertical-tabs,
+#sidebar-main,
+sidebar-main {
+  background-color: var(--cae-bg) !important;
+}
+
+#tabbrowser-tabs[orient="vertical"] .tabbrowser-tab {
+  padding-block: 0 !important;
+}
+
+#tabbrowser-tabs[orient="vertical"] .tab-background {
+  margin-block: 1px !important;
+  border: 1px solid transparent !important;
+  outline: none !important;
+  background: transparent !important;
+}
+
+#tabbrowser-tabs[orient="vertical"]
+  .tabbrowser-tab:hover
+  > .tab-stack
+  > .tab-background:not([selected], [multiselected]) {
+  background: var(--cae-surface) !important;
+}
+
+/* Active tab: a boxed line in the accent colour, like a focused pane. */
+#tabbrowser-tabs .tab-background:is([selected], [multiselected]) {
+  background: var(--cae-surface) !important;
+  border: 1px solid var(--cae-accent) !important;
+  outline: none !important;
+}
+
+#tabbrowser-tabs .tab-background[multiselected]:not([selected]) {
+  border-style: dashed !important;
+}
+
+.tabbrowser-tab .tab-label {
+  color: var(--cae-fg-dim) !important;
+}
+
+.tabbrowser-tab:is([selected], [visuallyselected]) .tab-label {
+  color: var(--cae-bright) !important;
+}
+
+.tabbrowser-tab[pending] .tab-label,
+.tabbrowser-tab[discarded] .tab-label {
+  color: var(--cae-muted) !important;
+  font-style: italic !important;
+}
+
+.tabbrowser-tab:is([soundplaying], [muted]) .tab-label {
+  color: var(--cae-accent-2) !important;
+}
+
+/* Close button only when it's useful. */
+#tabbrowser-tabs[orient="vertical"]
+  .tabbrowser-tab:not(:hover, [selected])
+  .tab-close-button {
+  visibility: hidden !important;
+}
+
+.tab-close-button:hover {
+  background-color: var(--cae-raised) !important;
+  fill: var(--cae-red) !important;
+}
+
+/* "+ New Tab" row */
+#tabs-newtab-button,
+#vertical-tabs-newtab-button {
+  color: var(--cae-muted) !important;
+}
+
+#tabs-newtab-button:hover,
+#vertical-tabs-newtab-button:hover {
+  color: var(--cae-fg) !important;
+}
+
+/* Container (identity) colour line stays visible but thin. */
+.tab-context-line {
+  height: 2px !important;
+}
+
+/* Bottom launcher (settings / history / bookmarks icons): a status-line
+ * style rule above it.  (Selector lives inside sidebar-main's shadow DOM.) */
+.wrapper > .buttons-wrapper {
+  border-top: var(--cae-border) !important;
+}
+
+/* ...and the button group fills the whole bar, buttons spread edge to edge.
+ * [orientation="horizontal"] is the expanded vertical-tabs launcher; the
+ * collapsed icon strip (vertical) keeps Firefox's own layout. */
+.buttons-wrapper > .tools-and-extensions[orientation="horizontal"] {
+  flex: 1 1 auto !important;
+  justify-content: space-between !important;
+}
+
+/* ---- 7. Menus, panels, popups, tooltips ----------------------------------- */
+menupopup,
+panel {
+  --panel-background: var(--cae-bg) !important;
+  --panel-color: var(--cae-fg) !important;
+  --panel-border-color: var(--cae-line) !important;
+  --panel-shadow: none !important;
+  --panel-shadow-margin: 0 !important;
+  --panel-border-radius: 0 !important;
+}
+
+menupopup::part(content),
+panel::part(content) {
+  background-color: var(--cae-bg) !important;
+  color: var(--cae-fg) !important;
+  border: 1px solid var(--cae-line) !important;
+}
+
+menu,
+menuitem {
+  color: var(--cae-fg) !important;
+}
+
+:is(menu, menuitem)[_moz-menuactive]:not([disabled]) {
+  background-color: var(--cae-raised) !important;
+  color: var(--cae-bright) !important;
+}
+
+:is(menu, menuitem)[disabled] {
+  color: var(--cae-line) !important;
+}
+
+menuseparator,
+toolbarseparator {
+  border-color: var(--cae-raised) !important;
+}
+
+/* App menu / panel buttons */
+.subviewbutton:not([disabled]):hover,
+.subviewbutton:not([disabled])[open],
+.subviewbutton:focus-visible {
+  background-color: var(--cae-raised) !important;
+  color: var(--cae-bright) !important;
+}
+
+.panel-header,
+.panel-footer {
+  border-color: var(--cae-raised) !important;
+}
+
+tooltip {
+  appearance: none !important;
+  background-color: var(--cae-surface) !important;
+  color: var(--cae-fg) !important;
+  border: 1px solid var(--cae-line) !important;
+  padding: 2px 6px !important;
+}
+
+/* ---- 8. Odds and ends ------------------------------------------------------ */
+/* Link-hover / loading status in the corner of the page. */
+#statuspanel-label {
+  background-color: var(--cae-surface) !important;
+  color: var(--cae-fg-dim) !important;
+  border: 1px solid var(--cae-line) !important;
+}
+
+/* Find bar */
+findbar {
+  background-color: var(--cae-bg) !important;
+  color: var(--cae-fg) !important;
+  border-top: var(--cae-border) !important;
+}
+
+findbar .findbar-textbox {
+  background-color: var(--cae-surface) !important;
+  color: var(--cae-fg) !important;
+  border: 1px solid var(--cae-raised) !important;
+  outline: none !important;
+}
+
+findbar .findbar-textbox:focus {
+  border-color: var(--cae-accent) !important;
+}
+
+findbar .findbar-textbox[status="notfound"] {
+  border-color: var(--cae-red) !important;
+}
+
+/* Pane rules: exactly one 1px line between panes, like tmux borders.
+ * Panes draw them; splitters stay invisible but keep their grab area. */
+#tabbrowser-tabpanels .browserContainer {
+  border: none !important;
+}
+
+#sidebar-container,
+#sidebar-box {
+  border: none !important;
+  border-inline-end: var(--cae-border) !important;
+}
+
+:is(#sidebar-container, #sidebar-box)[sidebar-positionend] {
+  border-inline-end: none !important;
+  border-inline-start: var(--cae-border) !important;
+}
+
+.sidebar-splitter,
+#sidebar-splitter,
+#sidebar-launcher-splitter {
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Notification bars (e.g. "LibreWolf prevented this site…"). */
+.infobar,
+notification-message {
+  background-color: var(--cae-surface) !important;
+  color: var(--cae-fg) !important;
+  border-bottom: var(--cae-border) !important;
+}

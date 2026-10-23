@@ -1,0 +1,5 @@
+# Mango has no compatible xdg-desktop-portal-wlr output chooser, so select the
+# sole output directly instead of failing after trying unavailable dmenu
+# launchers.
+[screencast]
+chooser_type=none

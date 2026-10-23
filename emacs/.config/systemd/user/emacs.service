@@ -1,0 +1,19 @@
+# Emacs daemon for Doom.
+# Overrides /usr/lib/systemd/user/emacs.service from the emacs package so the
+# daemon starts with the graphical session (SSH_AUTH_SOCK comes from
+# gcr-ssh-agent.socket; config.el adds mason's bin to exec-path itself).
+#   systemctl --user enable --now emacs.service
+[Unit]
+Description=Emacs text editor
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/emacs --fg-daemon
+Restart=on-failure
+SuccessExitStatus=15
+
+[Install]
+WantedBy=graphical-session.target

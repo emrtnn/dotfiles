@@ -1,0 +1,34 @@
+# Signs with the same SSH key and allowed signers as git (~/.config/git).
+
+[aliases]
+logver = ["log", "--config", "ui.show-cryptographic-signatures=true"]
+
+[git]
+colocate = true
+default-branch = "master"
+
+[merge]
+conflict-marker-style = "diff3"
+
+[merge-tools.ediff]
+merge-args = ["$left", "$right", "$base", "$output"]
+program = "emacs-ediff" # ~/.local/bin/emacs-ediff (emacs package)
+
+[signing]
+backend = "ssh"
+behavior = "own"
+key = "~/.ssh/id_ed25519.pub"
+
+[signing.backends.ssh]
+allowed-signers = "~/.config/git/allowed_signers"
+
+[ui]
+color = "always"
+default-revset = "all()"
+diff-formatter = ":git"
+editor = "nvim"
+paginate = "auto"
+
+[user]
+email = "emrtnn@proton.me"
+name = "emrtnn"
