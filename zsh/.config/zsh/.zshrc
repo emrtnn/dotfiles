@@ -13,6 +13,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 
 
 eval "$(zoxide init zsh --cmd cd)"
+eval "$(starship init zsh)"
 
 # History options should be set in .zshrc and after oh-my-zsh sourcing.
 HISTSIZE="10000"
