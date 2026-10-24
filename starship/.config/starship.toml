@@ -1,0 +1,27 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Default Starship prompt with the Caelus palette (~/dotfiles/README.md).
+# The names shadow the ANSI ones, so the default module styles ("bold cyan",
+# "yellow", …) pick up the Caelus colors.
+palette = "caelus"
+
+[palettes.caelus]
+black = "#0f0f0f"
+red = "#f16e65"
+green = "#72ca68"
+yellow = "#efbf71"
+blue = "#71b4d6"
+purple = "#e28dc6"
+magenta = "#e28dc6"
+cyan = "#7ec9a3"
+white = "#f4decd"
+orange = "#ef934d"
+
+# Default deleted symbol ✘ renders wider than one cell and overlaps the
+# brackets; swap only that glyph and keep the default look otherwise.
+[git_status]
+deleted = "x"
+
+# ✗ on error; the extra space keeps the glyph from running into the cursor.
+[character]
+error_symbol = "[✗  ](bold red)"
