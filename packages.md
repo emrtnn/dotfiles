@@ -1,10 +1,11 @@
 # Packages
 
-Everything to install on monad and arpano. Names are checked against the
+Everything to install on argos and arpano. Names are checked against the
 core/extra/multilib databases, the AUR and mason.nvim's registry.
 
-- **pacman**: official repos. Enable `[multilib]` in `/etc/pacman.conf` on
-  monad (Steam and the `lib32-*` packages).
+- **pacman**: official repos plus the CachyOS repos (`linux-cachyos*`; setup
+  in system.md). Enable `[multilib]` in `/etc/pacman.conf` on argos (Steam
+  and the `lib32-*` packages).
 - **AUR**: needs an AUR helper, e.g. `paru` (bootstrap:
   `git clone https://aur.archlinux.org/paru-bin.git && cd paru-bin && makepkg -si`).
 - **mason**: Neovim installs these itself on first start
@@ -39,7 +40,7 @@ sudo pacman -S --needed \
   ninja valgrind man-pages man-db gdb gef pkgconf \
   tor torsocks proxychains-ng openvpn wireshark-qt docker nftables iptables \
   networkmanager tailscale zram-generator \
-  linux-zen linux-zen-headers amd-ucode linux-firmware limine plymouth \
+  linux-cachyos linux-cachyos-headers amd-ucode linux-firmware limine plymouth \
   sddm kwin qt6-svg qt6-virtualkeyboard qt6-multimedia-ffmpeg accountsservice \
   qemu-desktop libvirt virt-manager virt-viewer dnsmasq swtpm virtiofsd edk2-ovmf spice-gtk \
   guestfs-tools libguestfs \
@@ -53,22 +54,23 @@ rustup component add rust-analyzer clippy rustfmt
 paru -S --needed \
   carapace-bin bibata-cursor-theme-bin ttf-twemoji-color ttf-all-the-icons \
   helium-browser-bin pi-coding-agent-bin mpv-modernz vesktop-bin onlyoffice-bin localsend-bin \
-  limine-mkinitcpio-hook plymouth-themes-adi1090x-git sddm-silent-theme \
-  virtio-win quickemu nixd foundry-bin \
-  burpsuite ffuf smbmap whatweb seclists rockyou wfuzz pspy cewl-git ruby-evil-winrm hashid
+  limine-mkinitcpio-hook sddm-silent-theme \
+  virtio-win quickemu foundry-bin \
+  burpsuite ffuf smbmap whatweb seclists rockyou pspy cewl-git ruby-evil-winrm hashid
 ```
 
 Optional: `nix` (pacman) for Nix devshells. nvim and Doom already support
-`.nix` files (nixd, alejandra, statix).
+`.nix` files (alejandra, statix; add AUR `nixd` if you want the LSP).
 
-### monad (NVIDIA, gaming)
+### argos (NVIDIA, gaming)
 
 ```bash
 sudo pacman -S --needed \
-  nvidia-open-dkms nvidia-utils lib32-nvidia-utils nvidia-settings libva-nvidia-driver nvtop \
+  linux-cachyos-nvidia-open nvidia-utils lib32-nvidia-utils nvidia-settings libva-nvidia-driver nvtop \
   steam gamescope gamemode lib32-gamemode protontricks umu-launcher \
   vulkan-tools mesa-utils libnotify lib32-pipewire lib32-vulkan-icd-loader
 
+rustup target add i686-unknown-linux-gnu   # lib32-extest is Rust built for 32-bit
 paru -S --needed proton-ge-custom-bin heroic-games-launcher-bin lib32-extest iptvnator-bin
 ```
 
@@ -118,7 +120,6 @@ What each group is for, in the same order as the lists.
 | zig | pacman | Zig (zls comes from mason, matching its version) |
 | php | pacman | runtime for phpactor / php-cs-fixer |
 | nodejs, npm, pnpm, python, uv | pacman | mason's npm/pypi tools, global npm installs, Python |
-| nixd | AUR | Nix language server (not in mason) |
 | foundry-bin | AUR | `forge fmt` for Solidity (extra's `foundry` is an unrelated GNOME tool) |
 | emacs-wayland | pacman | Emacs (pgtk build) for Doom |
 | libvterm, libtool, cmake | pacman | Doom compiles vterm |
@@ -170,7 +171,7 @@ docker-compose-language-service, hadolint.
 | telegram-desktop, signal-desktop, vesktop-bin | pacman, AUR | chat |
 | evince, onlyoffice-bin | pacman, AUR | PDF (OnlyOffice is the default) and office |
 | mpv, mpv-modernz | pacman, AUR | video player and its OSC |
-| playerctl, iptvnator-bin | pacman, AUR | media keys; IPTV (monad) |
+| playerctl, iptvnator-bin | pacman, AUR | media keys; IPTV (argos) |
 | dolphin, ark, kio-fuse, ffmpegthumbs, kdegraphics-thumbnailers | pacman | file manager, archives, thumbnails |
 | kconfig, archlinux-xdg-menu | pacman | `kwriteconfig6` (README), Dolphin's "Open With" outside Plasma |
 | gwenview, kimageformats | pacman | image viewer (+ AVIF, HEIF, JXL, RAW…) |
@@ -200,9 +201,9 @@ docker-compose-language-service, hadolint.
 | wireshark-qt | pacman | packet capture |
 | docker | pacman | containers |
 | zram-generator | pacman | compressed swap in RAM |
-| linux-zen, linux-zen-headers, amd-ucode, linux-firmware | pacman | kernel (headers for nvidia DKMS), microcode |
+| linux-cachyos, linux-cachyos-headers, amd-ucode, linux-firmware | CachyOS, pacman | kernel (headers for any DKMS module), microcode |
 | limine, limine-mkinitcpio-hook | pacman, AUR | bootloader |
-| plymouth, plymouth-themes-adi1090x-git | pacman, AUR | boot splash ("splash" theme) |
+| plymouth | pacman | boot splash (default theme) |
 | qemu-desktop, libvirt, virt-manager, virt-viewer, dnsmasq | pacman | VMs with NAT networking |
 | swtpm, virtiofsd, edk2-ovmf, spice-gtk | pacman | TPM, shared folders, UEFI, USB redirection |
 | guestfs-tools, libguestfs | pacman | `virt-*` disk image tools |
@@ -219,13 +220,13 @@ docker-compose-language-service, hadolint.
 | impacket, perl-image-exiftool, python-jsbeautifier | pacman | Windows protocols, `exiftool`, `js-beautify` |
 | openssl, openldap, binwalk, ghidra | pacman | crypto, LDAP tools, firmware, reversing |
 | burpsuite, ffuf, smbmap, whatweb, pspy, cewl-git, ruby-evil-winrm, hashid | AUR | web proxy, fuzzing, SMB, recon, process spying, wordlist generation, WinRM, hash identification |
-| seclists, rockyou, wfuzz | AUR | wordlists: `/usr/share/seclists`, `/usr/share/dict/rockyou.txt`, `/usr/share/wfuzz/wordlists` |
+| seclists, rockyou | AUR | wordlists: `/usr/share/seclists`, `/usr/share/dict/rockyou.txt` |
 
-### monad
+### argos
 
 | Package | Repo | For |
 | --- | --- | --- |
-| nvidia-open-dkms, nvidia-utils, lib32-nvidia-utils, nvidia-settings, libva-nvidia-driver, nvtop | pacman, multilib | NVIDIA driver, VA-API, GPU monitor |
+| linux-cachyos-nvidia-open, nvidia-utils, lib32-nvidia-utils, nvidia-settings, libva-nvidia-driver, nvtop | CachyOS, pacman, multilib | NVIDIA driver, VA-API, GPU monitor |
 | steam, gamescope, protontricks, umu-launcher | multilib, pacman | games |
 | proton-ge-custom-bin, heroic-games-launcher-bin, lib32-extest | AUR | Proton-GE, Epic/GOG, Steam Input on Wayland |
 | gamemode, lib32-gamemode, libnotify | pacman, multilib | GameMode (and its start/end notifications) |
