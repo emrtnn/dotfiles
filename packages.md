@@ -20,7 +20,7 @@ sudo pacman -S --needed \
   base-devel stow git bash zsh vim wget gcc make cmake e2fsprogs parted plocate pacman-contrib \
   lazygit ripgrep fd bind duckdb btop github-cli unzip 7zip file jq tree \
   zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search \
-  eza fzf zoxide yazi poppler resvg chafa imagemagick ffmpeg \
+  eza fzf zoxide starship yazi poppler resvg chafa imagemagick ffmpeg \
   bat tuicr jujutsu openssh tmux \
   neovim tree-sitter-cli curl tar gzip \
   clang cppcheck rustup zig php nodejs npm pnpm python uv \
@@ -105,6 +105,7 @@ What each group is for, in the same order as the lists.
 | eza, fzf, zoxide | pacman | `ls` aliases, fuzzy finder, `cd` (zoxide) |
 | zsh-autosuggestions, zsh-syntax-highlighting, zsh-history-substring-search | pacman | zsh plugins (sourced from `/usr/share/zsh/plugins`) |
 | carapace-bin | AUR | shell completions |
+| starship | pacman | zsh prompt |
 | yazi + poppler, resvg, chafa, imagemagick, ffmpeg | pacman | file manager and its previews |
 | bat, tuicr, jujutsu, tmux | pacman | pager, code review TUI (`gd` alias), jj, multiplexer (TPM installs its plugins) |
 

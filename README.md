@@ -50,7 +50,7 @@ Same on both machines:
 ```bash
 cd ~/dotfiles
 stow nvim doom mango
-stow --no-folding zsh git jj tmux yazi bat tuicr face wallpapers \
+stow --no-folding zsh git jj starship tmux yazi bat tuicr face wallpapers \
   gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal cliphist foot noctalia satty
 stow --no-folding steam      # argos only (gaming)
 ```
@@ -65,6 +65,7 @@ if it reports a conflict, move the file away and run it again.
 | `zsh` | `~/.zshenv`, `~/.config/zsh/{.zshenv,.zshrc}` | environment variables (`.zshenv`, see below); zsh with eza, fzf, zoxide, carapace, yazi; vi mode; history; aliases |
 | `git` | `~/.config/git/{config,allowed_signers}` | identity, SSH commit/tag signing, defaults, aliases |
 | `jj` | `~/.config/jj/config.toml` | Jujutsu: same identity and signing key, ediff merge tool |
+| `starship` | `~/.config/starship.toml` | zsh prompt: default layout with the Caelus palette |
 | `tmux` | `~/.config/tmux/tmux.conf` | `C-a` prefix, vi mode, Caelus status bar, smart-splits navigation, resurrect + continuum via TPM |
 | `nvim` *(linked)* | `~/.config/nvim` | lazy.nvim config; `lua/plugins/mason.lua` installs the language servers/formatters/linters |
 | `yazi` | `~/.config/yazi/{yazi.toml,theme.toml,caelus.tmTheme,plugins/full-border.yazi}` | file manager with the Caelus theme |

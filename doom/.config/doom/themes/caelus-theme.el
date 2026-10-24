@@ -1,14 +1,6 @@
-;;; caelus-theme.el --- Warm cream on near-black, orange accent -*- lexical-binding: t; -*-
+;;; themes/caelus-theme.el -*- lexical-binding: t; -*-
 
-;;; Commentary:
-;; Palette: the Caelus table in ~/dotfiles/README.md (keep in sync); colors
-;; from dacctal's caelus.  Roles match the nvim colorscheme
-;; (~/.config/nvim/colors/caelus.lua): keywords orange,
-;; functions yellow, strings green, types cyan, numbers/constants magenta,
-;; properties light blue, operators/punctuation grey.
-;;
-;; Each entry below is (FACE :attribute value ...).  `M-x describe-face'
-;; or `C-u C-x =' on any text shows which face is in use there.
+;;; caelus-theme.el --- Warm cream on near-black, orange accent -*- lexical-binding: t; -*-
 
 ;;; Code:
 
