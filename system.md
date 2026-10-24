@@ -9,7 +9,7 @@ packages (see [README.md](README.md)).
 
 | Machine | What it is | Sections |
 | --- | --- | --- |
-| monad | Desktop, Ryzen 5 3600 + NVIDIA, gaming, encrypted data HDD | Both machines, monad |
+| argos | Desktop, Ryzen 5 3600 + NVIDIA, gaming, encrypted data HDD | Both machines, argos |
 | arpano | AMD workstation (ROCm), printing, Bluetooth; work-only | Both machines, arpano |
 
 ---
@@ -38,9 +38,12 @@ packages (see [README.md](README.md)).
 
 ### User account
 
-- UID 1000 and primary group `users` (GID 100), so files on disks you keep
-  (monad's data HDD) still belong to you: ownership follows the UID, not the
-  name. Arch's `useradd` would otherwise create a separate per-user group:
+- UID 1000 and primary group `users`, so files on disks you keep (argos's
+  data HDD) still belong to you: ownership follows the UID, not the name.
+  The `users` GID differs between distros (100 on NixOS, 982 here), so after
+  a reinstall fix the group on kept disks once:
+  `sudo chown -R -h <user>:users /data`. Arch's `useradd` would
+  otherwise create a separate per-user group:
 
   ```bash
   useradd -m -u 1000 -g users -G wheel,video,render -s /usr/bin/zsh <user>
@@ -55,10 +58,10 @@ packages (see [README.md](README.md)).
   | wireshark | capturing without root | both |
   | docker | docker without sudo | both |
   | libvirt, kvm | virt-manager / QEMU | both |
-  | gamemode | GameMode's renice | monad |
+  | gamemode | GameMode's renice | argos |
 
   `usermod -aG wheel,video,render,wireshark,docker,libvirt,kvm <user>`
-  (plus `gamemode` on monad).
+  (plus `gamemode` on argos).
 
 ### Base services
 
@@ -71,7 +74,7 @@ packages (see [README.md](README.md)).
 
 PipeWire with ALSA, PulseAudio and JACK compatibility: install `pipewire
 pipewire-alsa pipewire-pulse pipewire-jack wireplumber` (plus
-`lib32-pipewire` on monad). The user units start by themselves.
+`lib32-pipewire` on argos). The user units start by themselves.
 
 ### Keyring and SSH agent
 
@@ -209,18 +212,35 @@ table inet dotfiles-fw {
 }
 ```
 
+### CachyOS repositories
+
+The kernel (and the NVIDIA module built for it) come from the CachyOS repos,
+added on top of Arch's. Their script detects the CPU level (x86-64-v3 on the
+Ryzen 5 3600), installs the keyring and mirrorlists and adds the
+`[cachyos-v3]`, `[cachyos-core-v3]`, `[cachyos-extra-v3]` and `[cachyos]`
+sections above `[core]` in `/etc/pacman.conf`:
+
+```bash
+curl -O https://mirror.cachyos.org/cachyos-repo.tar.xz
+tar xvf cachyos-repo.tar.xz && cd cachyos-repo
+sudo ./cachyos-repo.sh
+```
+
+The CachyOS repos are listed first, so pacman takes their optimized builds of
+regular packages too (`pacman -Sp` shows which repo each package comes from).
+
 ### Kernel, bootloader, initramfs
 
-Zen kernel, Limine on UEFI, a systemd-based quiet initramfs, Plymouth with
-adi1090x's **splash** theme, AMD microcode.
+CachyOS kernel, Limine on UEFI, a systemd-based quiet initramfs, Plymouth
+with its default theme, AMD microcode.
 
-- Packages: `linux-zen linux-zen-headers amd-ucode linux-firmware limine plymouth`,
+- Packages: `linux-cachyos linux-cachyos-headers amd-ucode linux-firmware limine plymouth`,
   and from the AUR `limine-mkinitcpio-hook` (keeps `/boot/limine.conf`
-  entries in sync with installed kernels) and `plymouth-themes-adi1090x-git`.
+  entries in sync with installed kernels).
 - Kernel command line: `quiet splash loglevel=0` plus the root. With
   limine-mkinitcpio-hook it goes in `/etc/default/limine`, e.g.
   `KERNEL_CMDLINE[default]="rd.luks.name=<LUKS-UUID>=cryptroot rd.luks.options=discard root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet splash loglevel=0"`
-  (`discard` only on monad's SSD; check the hook's docs for the exact
+  (`discard` only on argos's SSD; check the hook's docs for the exact
   variable names).
 - `/etc/mkinitcpio.conf.d/10-initrd.conf`:
 
@@ -228,14 +248,8 @@ adi1090x's **splash** theme, AMD microcode.
   HOOKS=(systemd autodetect microcode modconf kms keyboard sd-vconsole block plymouth sd-encrypt filesystems fsck)
   ```
 
-- `/etc/plymouth/plymouthd.conf`:
-
-  ```ini
-  [Daemon]
-  Theme=splash
-  ```
-
-  then `mkinitcpio -P`.
+  then `mkinitcpio -P`. Plymouth keeps its default theme (no
+  `plymouthd.conf` change).
 
 ### Display manager: SDDM + SilentSDDM
 
@@ -258,11 +272,14 @@ CompositorCommand=kwin_wayland --no-global-shortcuts --no-kactivities --no-locks
 EnableHiDPI=true
 ```
 
-`systemctl enable sddm`. Profile picture, through AccountsService:
+`systemctl enable sddm`. Profile picture: ask AccountsService over D-Bus (no
+sudo; it copies the image to `/var/lib/AccountsService/icons/$USER` and
+records it). Editing its files by hand doesn't stick, since the daemon writes
+its own state back:
 
 ```bash
-sudo install -Dm644 ~/dotfiles/face/.face.png /var/lib/AccountsService/icons/$USER
-printf '[User]\nIcon=/var/lib/AccountsService/icons/%s\n' "$USER" | sudo install -Dm600 /dev/stdin /var/lib/AccountsService/users/$USER
+busctl call org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) \
+  org.freedesktop.Accounts.User SetIconFile s ~/.face.png
 ```
 
 ### Networking: NetworkManager + Quad9 over TLS
@@ -372,16 +389,26 @@ Reboot (or `systemctl daemon-reload && systemctl start systemd-zram-setup@zram0`
 
 ---
 
-## monad (NVIDIA desktop, gaming)
+## argos (NVIDIA desktop, gaming)
 
 ### NVIDIA
 
 Open kernel module, modesetting (+fbdev), VRAM preserved across suspend,
 VA-API through libva-nvidia-driver.
 
-- Packages: `nvidia-open-dkms` (DKMS because of the Zen kernel),
+- Packages: `linux-cachyos-nvidia-open` (the open module prebuilt for
+  `linux-cachyos`, no DKMS),
   `nvidia-utils lib32-nvidia-utils nvidia-settings libva-nvidia-driver nvtop`.
   `nvidia-utils` already blacklists nouveau.
+- Early KMS: the NVIDIA modules go in the initramfs,
+  `/etc/mkinitcpio.conf.d/20-nvidia.conf`:
+
+  ```bash
+  MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+  ```
+
+  Rebuild with `limine-update` (or `mkinitcpio -P`) after changing this file
+  or `/etc/modprobe.d/nvidia.conf`, which is copied into the initramfs.
 - `/etc/modprobe.d/nvidia.conf`:
 
   ```
@@ -409,8 +436,11 @@ VA-API through libva-nvidia-driver.
   `lib32-vulkan-icd-loader`, `lib32-gamemode`).
 - Steam with Proton-GE, protontricks, gamescope (a gamescope session is
   `gamescope -- steam -gamepadui`), Heroic, umu-launcher: see packages.md.
-- Steam Input on Wayland: AUR `lib32-extest`, then start Steam with
-  `LD_PRELOAD=/usr/lib32/libextest.so`.
+- Steam Input on Wayland: AUR `lib32-extest` (build needs
+  `rustup target add i686-unknown-linux-gnu`), then start Steam with
+  `LD_PRELOAD=/usr/lib32/libextest.so`. The `steam` stow package does that:
+  it overrides `steam.desktop` in `~/.local/share/applications`. From a
+  terminal, use the full `LD_PRELOAD=… steam` yourself.
 - GameMode + the `gamemode` group. `/etc/gamemode.ini`:
 
   ```ini
@@ -424,18 +454,22 @@ VA-API through libva-nvidia-driver.
   end=notify-send 'GameMode ended'
   ```
 
-- NTSYNC for Wine/Proton (`linux-zen` has the module):
+- NTSYNC for Wine/Proton (`linux-cachyos` has the module):
   - `/etc/modules-load.d/ntsync.conf` → `ntsync`
-  - `/etc/udev/rules.d/99-ntsync.rules` → `KERNEL=="ntsync", MODE="0660", TAG+="uaccess"`
-- No split-lock mitigation slowdown, `/etc/sysctl.d/99-gaming.conf`:
-  `kernel.split_lock_mitigate = 0`
+  - `/etc/udev/rules.d/70-ntsync.rules` → `KERNEL=="ntsync", MODE="0660", TAG+="uaccess"`
+    (numbered below 73: `73-seat-late.rules` is what turns the `uaccess`
+    tag into an ACL, so a later rule's tag is never applied)
+- No `kernel.split_lock_mitigate` sysctl: the Ryzen 5 3600 has no split-lock
+  detection, so writing it fails (`systemd-sysctl.service` errors).
 
 ### Storage layout
 
 - LUKS `cryptroot` (discards allowed) with btrfs subvolumes, all
   `compress=zstd,noatime`: `@` → `/`, `@home` → `/home`, `@log` →
-  `/var/log`, `@swap` → `/swap` (`nofail`, holds `/swap/swapfile`). ESP at
-  `/boot` (`fmask=0077,dmask=0077`).
+  `/var/log`, `@pkg` → `/var/cache/pacman/pkg`, `@snapshots` →
+  `/.snapshots`. ESP at `/boot` (`fmask=0077,dmask=0077`).
+- Swap: a separate LUKS partition `cryptswap`, on top of zram (zram has the
+  higher priority, so the partition only takes the overflow).
 - `systemctl enable fstrim.timer`
 - Second disk: below.
 
@@ -443,7 +477,13 @@ VA-API through libva-nvidia-driver.
 
 The second disk (LUKS + btrfs, mounted at `/data`) is kept across the
 reinstall. The steps, including where its key lives, are in your local notes
-(`~/Documents/arch-install-guide.md`), not in this repo.
+(`~/Documents/arch-install-guide.md`), not in this repo. The files live in
+the btrfs subvolume `@data`, so mount that, not the top level (which would
+show them under `/data/@data`). `/etc/fstab`:
+
+```
+/dev/mapper/cryptdata  /data  btrfs  subvol=@data,noatime,compress=zstd,nofail  0 0
+```
 
 ---
 

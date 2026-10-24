@@ -1,6 +1,6 @@
 # dotfiles
 
-Home configuration for my two Arch Linux machines, **monad** (NVIDIA desktop)
+Home configuration for my two Arch Linux machines, **argos** (NVIDIA desktop)
 and **arpano** (AMD workstation), managed with GNU Stow: Mango + Noctalia,
 zsh, tmux, Neovim, Doom Emacs and the Caelus theme everywhere.
 
@@ -52,6 +52,7 @@ cd ~/dotfiles
 stow nvim doom mango
 stow --no-folding zsh git jj tmux yazi bat tuicr face wallpapers \
   gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal cliphist foot noctalia satty
+stow --no-folding steam      # argos only (gaming)
 ```
 
 Remove a package with `stow -D <pkg>`. Stow never overwrites existing files:
@@ -85,6 +86,7 @@ if it reports a conflict, move the file away and run it again.
 | `foot` | `~/.config/foot/foot.ini` | terminal |
 | `noctalia` | `~/.config/noctalia/{config.toml,palettes/Caelus.json}` | shell: bar, launcher, notifications, lock, palette |
 | `satty` | `~/.config/satty/config.toml` | screenshot annotation |
+| `steam` | `~/.local/share/applications/steam.desktop` | Steam launcher with `LD_PRELOAD` of lib32-extest (Steam Input on Wayland; argos only) |
 
 ## Environment variables
 
@@ -216,32 +218,6 @@ gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'
 gsettings set org.gnome.desktop.interface cursor-size 24
 ```
 
-### KeePassXC
-
-KeePassXC rewrites its ini, so it's set by hand rather than stowed. Write
-`~/.config/keepassxc/keepassxc.ini` (mode 600):
-
-```ini
-[Browser]
-Enabled=true
-
-[GUI]
-CheckForUpdates=false
-MinimizeOnClose=true
-MinimizeToTray=true
-ShowTrayIcon=true
-
-[Security]
-LockDatabaseIdleSeconds=14400
-```
-
-Browser integration: in KeePassXC → Settings → Browser Integration, tick
-**Firefox** for LibreWolf (KeePassXC writes the manifest to
-`~/.mozilla/native-messaging-hosts/`, which LibreWolf also reads). For
-Helium, under *Advanced* use a custom browser configuration location: type
-Chromium, `~/.config/net.imput.helium/NativeMessagingHosts`. The database
-syncs to `~/Passwords` through Syncthing.
-
 ### LibreWolf theme
 
 LibreWolf names its profile folder randomly, so the theme is installed by
@@ -297,7 +273,7 @@ As on the [Arch wiki](https://wiki.archlinux.org/title/Syncthing): the
 package's user unit (`syncthing.service`, enabled above) runs it, and you
 configure it in the web GUI at <http://127.0.0.1:8384>:
 
-- **Devices** ("Auto Accept" off): arpano, argos, iphone and monad. Their
+- **Devices** ("Auto Accept" off): arpano, argos and iphone. Their
   device IDs are in your local notes, not in this repo: with global
   discovery on, a device ID is enough to look up that device's current IP.
 - **Folder**: ID and label `keepass`, path `~/Passwords`, Send & Receive,
