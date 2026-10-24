@@ -17,3 +17,5 @@ id_ed25519*
 keys.txt
 auth.json
 web-search.json
+.sops.yaml
+secrets/
