@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# jj merge tool (jj config: merge-tools.ediff): opens a 3-way ediff merge in
-# the Emacs daemon.
-#   jj resolve --tool ediff
-set -euxo pipefail
-emacsclient -c --eval "(ediff-merge-files-with-ancestor \"$1\" \"$2\" \"$3\" nil \"$4\")"
