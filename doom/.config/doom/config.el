@@ -1,24 +1,31 @@
-;;; config.el -*- lexical-binding: t; -*-
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; Personal settings. Reload with `M-x doom/reload' (SPC h r r).
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
 
-;;; Toolchain
-;; Language servers and formatters are installed by Neovim's mason.nvim (the
-;; list in ~/.config/nvim/lua/plugins/mason.lua). ~/.config/zsh/.zshenv
-;; already has its bin dir on PATH; this also covers an Emacs started without that environment.
-(let ((mason-bin (expand-file-name "~/.local/share/nvim/mason/bin")))
-  (when (file-directory-p mason-bin)
-    (add-to-list 'exec-path mason-bin)
-    (unless (member mason-bin (split-string (or (getenv "PATH") "") path-separator))
-      (setenv "PATH" (concat mason-bin path-separator (getenv "PATH"))))))
 
-;; Build missing tree-sitter grammars without asking (needs git and a C
-;; compiler), so ts-modes just work.
-(setq treesit-auto-install-grammar 'always)
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets. It is optional.
+(setq user-full-name "emrtnn"
+       user-mail-address "emrtnn@proton.me")
 
-(setq doom-theme 'caelus              ; themes/caelus-theme.el
-      doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 22)
-      display-line-numbers-type 'relative)
+;; Doom exposes five (optional) variables for controlling fonts in Doom:
+;;
+;; - `doom-font' -- the primary font to use
+;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
+;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;; - `doom-symbol-font' -- for symbols
+;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
+;;
+;; See 'C-h v doom-font' for documentation and more examples of what they
+;; accept. For example:
+
+(setq doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 18)
+      doom-variable-pitch-font (font-spec :family "GeistMono Nerd Font" :size 20))
+
+;; Set line numbers relative to cursor position
+(setq display-line-numbers-type 'relative)
 
 ;; Cursor color per evil state, matching the modeline indicator.
 (setq evil-normal-state-cursor   '(box "#ef934d")
@@ -31,41 +38,27 @@
 (setq scroll-margin 8
       evil-want-fine-undo t)
 
-;;; LSP
-(after! lsp-mode
-  (setq lsp-headerline-breadcrumb-enable t
-        lsp-inlay-hint-enable t
-        lsp-enable-file-watchers nil)   ; big node_modules trees
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+(setq doom-theme 'caelus)
+;; Specify both a dark and light theme, like so and Doom will choose which one
+;; to load based on your system light/dark setting:
+;;
+;;   (setq doom-theme '(doom-one   . doom-one-light))   ; (DARK . LIGHT)
+;;
+;; If you want more pro-active theme switching based on OS light/dark mode, look
+;; up the `auto-dark' package.
 
-  ;; Python: basedpyright (installed by mason) instead of pyright.
-  (setq lsp-pyright-langserver-command "basedpyright")
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
 
-  ;; Solidity: vscode-solidity-server (Juan Blanco's, includes Solhint).
-  (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity"))
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-stdio-connection '("vscode-solidity-server" "--stdio"))
-    :activation-fn (lsp-activate-on "solidity")
-    :priority 1
-    :server-id 'vscode-solidity)))
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
 
-(add-hook 'solidity-mode-local-vars-hook #'lsp! 'append)
-
-;;; Formatters (apheleia): same tools as nvim's conform.nvim
-(after! apheleia
-  (setf (alist-get 'biome apheleia-formatters)
-        '("biome" "format" "--stdin-file-path" filepath))
-  (dolist (mode '(js-ts-mode typescript-ts-mode tsx-ts-mode json-ts-mode css-ts-mode))
-    (setf (alist-get mode apheleia-mode-alist) 'biome))
-  (setf (alist-get 'nix-mode apheleia-mode-alist) 'alejandra
-        (alist-get 'nix-ts-mode apheleia-mode-alist) 'alejandra
-        (alist-get 'alejandra apheleia-formatters) '("alejandra" "-q" "-")
-        (alist-get 'solidity-mode apheleia-mode-alist) 'forge-fmt
-        (alist-get 'forge-fmt apheleia-formatters) '("forge" "fmt" "--raw" "-")
-        (alist-get 'python-mode apheleia-mode-alist) 'ruff
-        (alist-get 'python-ts-mode apheleia-mode-alist) 'ruff))
-
-;;; Dashboard: same hydra banner as nvim's snacks dashboard
+;;; Dashboard: hydra
 (defun caelus/dashboard-hydra-banner ()
   (propertize
    (string-join
@@ -95,25 +88,36 @@
       (cl-substitute #'caelus/dashboard-widget-spacer #'+dashboard-widget-footer
                      +dashboard-functions))
 
+;; Adjust vterm's max scrollback
 (setq vterm-max-scrollback 100000)
 
-(defun ai/pi ()
-  "Toggle a pi session for the current project in a right-side window."
-  (interactive)
-  (require 'vterm)
-  (let* ((root (or (doom-project-root) default-directory))
-         (name (format "pi:%s" (doom-project-name)))
-         (buf  (get-buffer name))
-         (win  (and buf (get-buffer-window buf))))
-    (if win
-        (delete-window win)
-      (unless (buffer-live-p buf)
-        (let ((default-directory root)
-              (vterm-shell "pi"))
-          (setq buf (save-window-excursion (vterm name)))))
-      (select-window
-       (display-buffer buf '((display-buffer-in-side-window)
-                             (side . right)
-                             (window-width . 0.4)))))))
-
-(map! :leader :desc "Pi" "o i" #'ai/pi)
+;; Whenever you reconfigure a package, make sure to wrap your config in an
+;; `with-eval-after-load' block, otherwise Doom's defaults may override your
+;; settings. E.g.
+;;
+;;   (with-eval-after-load 'PACKAGE
+;;     (setq x y))
+;;
+;; The exceptions to this rule:
+;;
+;;   - Setting file/directory variables (like `org-directory')
+;;   - Setting variables which explicitly tell you to set them before their
+;;     package is loaded (see 'C-h v VARIABLE' to look them up).
+;;   - Setting doom variables (which start with 'doom-' or '+').
+;;
+;; Here are some additional functions/macros that will help you configure Doom.
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
+;; etc).
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
