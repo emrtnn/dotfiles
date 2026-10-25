@@ -77,7 +77,7 @@ if it reports a conflict, move the file away and run it again.
 | `cursor` | `~/.icons/default/index.theme`, `~/.local/share/icons/default/index.theme`, `~/.Xresources` | default cursor for X and XWayland apps |
 | `qt` | `~/.config/qt6ct/{qt6ct.conf,colors/Caelus.conf}` | Qt: Breeze style, Caelus palette, Papirus |
 | `dolphin` | `~/.local/share/color-schemes/Caelus.colors`, `~/.local/share/kio/servicemenus/open-in-yazi.desktop` | KDE color scheme and "Open in Yazi" (settings: below) |
-| `mimeapps` | `~/.config/mimeapps.list` (+ the legacy `~/.local/share/applications` copy) | default apps: LibreWolf, Dolphin, Gwenview, OnlyOffice, emacsclient for plain text |
+| `mimeapps` | `~/.config/mimeapps.list` (+ the legacy `~/.local/share/applications` copy), `~/.local/share/applications/emacsclient-frame.desktop` | default apps: LibreWolf, Dolphin, Gwenview, OnlyOffice; plain text in a new Emacs frame (a desktop file xdg-open can parse, unlike Emacs' own) |
 | `emacs` | `~/.config/systemd/user/emacs.service`, `~/.local/bin/emacs-ediff` | Emacs daemon with the graphical session; jj's merge tool |
 | `doom` *(linked)* | `~/.config/doom` | Doom Emacs config and the Caelus theme |
 | `mpv` | `~/.config/mpv/mpv.conf` | ModernZ instead of the built-in OSC |

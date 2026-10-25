@@ -107,7 +107,8 @@ keybind = ctrl+shift+w=close_surface
 keybind = ctrl+shift+arrow_up=jump_to_prompt:-1
 keybind = ctrl+shift+arrow_down=jump_to_prompt:1
 
-# Hand text to Emacs (xdg-open, text/plain = emacsclient in mimeapps):
+# Hand text to Emacs in a new frame (xdg-open; text/plain is
+# emacsclient-frame.desktop in the mimeapps package):
 #   ctrl+shift+o  visible screen: pick a URL with SPC s l (hints) or SPC s L
 #                 (list). Same key as foot's URL mode.
 #   ctrl+shift+s  the whole scrollback: search, copy, grep it as a buffer.

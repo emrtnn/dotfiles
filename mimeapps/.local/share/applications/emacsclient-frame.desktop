@@ -1,0 +1,14 @@
+[Desktop Entry]
+# text/plain handler (mimeapps.list). Emacs' own emacsclient.desktop wraps its
+# Exec in `sh -c "..."` quoting that xdg-open's generic launcher (Mango isn't a
+# DE it knows) can't parse, so files opened through xdg-open, like Ghostty's
+# ctrl+shift+o/s dumps, never reached Emacs. A new frame tiles next to the
+# window that asked for it; --alternate-editor= starts the daemon if needed.
+Type=Application
+Name=Emacs (new frame)
+Comment=Open the file in a new frame of the running Emacs daemon
+Exec=emacsclient --alternate-editor= --create-frame %F
+Icon=emacs
+Terminal=false
+MimeType=text/plain;
+NoDisplay=true
