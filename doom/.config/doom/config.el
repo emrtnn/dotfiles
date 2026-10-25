@@ -99,3 +99,15 @@
       :map dired-mode-map
       :n "h" #'dired-up-directory
       :n "l" #'dired-find-file)
+
+;;; SYSTEMD unit files
+;; Highlighting comes from `systemd-mode' (packages.el); LSP from the
+;; `systemd-lsp' binary (pacman: systemd-lsp).
+(after! lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(systemd-mode . "systemd"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection "systemd-lsp")
+                    :activation-fn (lsp-activate-on "systemd")
+                    :server-id 'systemd-lsp)))
+
+(add-hook 'systemd-mode-local-vars-hook #'lsp! 'append)
