@@ -66,7 +66,7 @@ if it reports a conflict, move the file away and run it again.
 | `git` | `~/.config/git/{config,allowed_signers}` | identity, SSH commit/tag signing, defaults, aliases |
 | `jj` | `~/.config/jj/config.toml` | Jujutsu: same identity and signing key, ediff merge tool |
 | `starship` | `~/.config/starship.toml` | zsh prompt: default layout with the Caelus palette |
-| `tmux` | `~/.config/tmux/tmux.conf` | `C-a` prefix, vi mode, Caelus status bar, smart-splits navigation, resurrect + continuum via TPM |
+| `tmux` | `~/.config/tmux/tmux.conf` | for servers: `C-a` prefix, vi mode, Caelus status bar, OSC 52 clipboard; no plugins (copy it over, see below) |
 | `nvim` *(linked)* | `~/.config/nvim` | lazy.nvim config; `lua/plugins/mason.lua` installs the language servers/formatters/linters |
 | `yazi` | `~/.config/yazi/{yazi.toml,theme.toml,caelus.tmTheme,plugins/full-border.yazi}` | file manager with the Caelus theme |
 | `bat` | `~/.config/bat/{config,themes/caelus.tmTheme}` | pager theme |
@@ -272,8 +272,16 @@ grammars are built by Doom when a mode first needs them.
 
 ### tmux
 
-TPM clones itself into `~/.local/share/tmux/plugins` on the first start and
-installs resurrect + continuum. `prefix + U` updates them.
+Meant for servers (locally, Ghostty + Mango + Emacs cover it). It needs no
+plugins or external tools, only tmux >= 3.2 on the host:
+
+```bash
+ssh host 'mkdir -p ~/.config/tmux'
+scp ~/dotfiles/tmux/.config/tmux/tmux.conf host:.config/tmux/tmux.conf
+```
+
+Copies in copy mode reach the local clipboard through Ghostty (OSC 52), and
+Ghostty installs its terminfo on the host on the first `ssh`.
 
 ### Syncthing
 
