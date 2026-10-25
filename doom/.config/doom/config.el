@@ -118,7 +118,11 @@
       :n "h" #'dired-up-directory
       :n "l" #'dired-find-file)
 
-;;; SYSTEMD unit files
+;;; LANGUAGES
+;; lsp semantic highlights
+(setq lsp-semantic-tokens-enable t)
+
+;;; Systemd unit files
 ;; Highlighting comes from `systemd-mode' (packages.el); LSP from the
 ;; `systemd-lsp' binary (pacman: systemd-lsp).
 (after! lsp-mode
@@ -127,5 +131,8 @@
    (make-lsp-client :new-connection (lsp-stdio-connection "systemd-lsp")
                     :activation-fn (lsp-activate-on "systemd")
                     :server-id 'systemd-lsp)))
-
 (add-hook 'systemd-mode-local-vars-hook #'lsp! 'append)
+
+;; Astro
+(add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
+(add-hook 'web-mode-hook #'lsp! 'append)
