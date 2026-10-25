@@ -24,7 +24,7 @@ sudo pacman -S --needed \
   bat tuicr jujutsu openssh tmux \
   neovim tree-sitter-cli curl tar gzip \
   clang cppcheck rustup zig php nodejs npm pnpm python uv \
-  emacs-wayland libvterm libtool ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono \
+  emacs-wayland libvterm libtool systemd-lsp ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono \
   mangowm xorg-xwayland noctalia ghostty satty \
   grim slurp hyprpicker brightnessctl wl-clipboard wtype cliphist gpu-screen-recorder \
   qt5-wayland qt6-wayland xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
@@ -124,6 +124,7 @@ What each group is for, in the same order as the lists.
 | foundry-bin | AUR | `forge fmt` for Solidity (extra's `foundry` is an unrelated GNOME tool) |
 | emacs-wayland | pacman | Emacs (pgtk build) for Doom |
 | libvterm, libtool, cmake | pacman | Doom compiles vterm |
+| systemd-lsp | pacman | LSP for systemd unit files in Doom |
 | ttf-nerd-fonts-symbols(-mono), ttf-all-the-icons | pacman, AUR | Doom's icons |
 | pi-coding-agent-bin | AUR | pi coding agent |
 

@@ -51,3 +51,6 @@
 ;; (unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
+
+;; systemd unit files (.service, .timer, .socket, ...): syntax highlighting
+(package! systemd)
