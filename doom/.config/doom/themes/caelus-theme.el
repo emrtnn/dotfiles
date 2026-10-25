@@ -259,7 +259,7 @@
       (dirvish-proc-finished :foreground ,green)
       (dirvish-proc-failed :foreground ,red :weight bold)
 
-      ;; Terminal colors (vterm, eat, compilation): same 16 as foot -----------
+      ;; Terminal colors (vterm, eat, compilation): same 16 as Ghostty --------
       (ansi-color-black :foreground ,bg :background ,bg)
       (ansi-color-red :foreground ,red :background ,red)
       (ansi-color-green :foreground ,green :background ,green)
