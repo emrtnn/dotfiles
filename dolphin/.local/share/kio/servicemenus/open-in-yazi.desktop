@@ -9,4 +9,4 @@ X-KDE-Priority=TopLevel
 [Desktop Action openYazi]
 Name=Open in Yazi
 Icon=utilities-terminal
-Exec=foot --app-id argos.yazi -e yazi %f
+Exec=ghostty +new-window -e yazi %f

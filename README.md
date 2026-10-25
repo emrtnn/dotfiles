@@ -2,7 +2,7 @@
 
 Home configuration for my two Arch Linux machines, **argos** (NVIDIA desktop)
 and **arpano** (AMD workstation), managed with GNU Stow: Mango + Noctalia,
-zsh, tmux, Neovim, Doom Emacs and the Caelus theme everywhere.
+Ghostty, zsh, tmux, Neovim, Doom Emacs and the Caelus theme everywhere.
 
 - [packages.md](packages.md): what to install (pacman, AUR, mason).
 - [system.md](system.md): system-level setup (boot, firewall, DNS, Tor,
@@ -51,7 +51,7 @@ Same on both machines:
 cd ~/dotfiles
 stow nvim doom mango
 stow --no-folding zsh git jj starship tmux yazi bat tuicr face wallpapers \
-  gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal cliphist foot noctalia satty
+  gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal cliphist ghostty noctalia satty
 stow --no-folding steam      # argos only (gaming)
 ```
 
@@ -77,14 +77,14 @@ if it reports a conflict, move the file away and run it again.
 | `cursor` | `~/.icons/default/index.theme`, `~/.local/share/icons/default/index.theme`, `~/.Xresources` | default cursor for X and XWayland apps |
 | `qt` | `~/.config/qt6ct/{qt6ct.conf,colors/Caelus.conf}` | Qt: Breeze style, Caelus palette, Papirus |
 | `dolphin` | `~/.local/share/color-schemes/Caelus.colors`, `~/.local/share/kio/servicemenus/open-in-yazi.desktop` | KDE color scheme and "Open in Yazi" (settings: below) |
-| `mimeapps` | `~/.config/mimeapps.list` (+ the legacy `~/.local/share/applications` copy) | default apps: LibreWolf, Dolphin, Gwenview, OnlyOffice |
+| `mimeapps` | `~/.config/mimeapps.list` (+ the legacy `~/.local/share/applications` copy) | default apps: LibreWolf, Dolphin, Gwenview, OnlyOffice, emacsclient for plain text |
 | `emacs` | `~/.config/systemd/user/emacs.service`, `~/.local/bin/emacs-ediff` | Emacs daemon with the graphical session; jj's merge tool |
 | `doom` *(linked)* | `~/.config/doom` | Doom Emacs config and the Caelus theme |
 | `mpv` | `~/.config/mpv/mpv.conf` | ModernZ instead of the built-in OSC |
 | `mango` *(linked)* | `~/.config/mango` | compositor config |
 | `xdg-desktop-portal` | `~/.config/xdg-desktop-portal/mango-portals.conf`, `~/.config/xdg-desktop-portal-wlr/config` | portals: wlr for screencast/screenshots, gtk for the rest |
 | `cliphist` | `cliphist.service`, `cliphist-images.service` | clipboard history for Noctalia |
-| `foot` | `~/.config/foot/foot.ini` | terminal |
+| `ghostty` | `~/.config/ghostty/{config.ghostty,themes/caelus}` | terminal: Caelus theme, tab/split keybinds, shell integration, screen/scrollback into Emacs |
 | `noctalia` | `~/.config/noctalia/{config.toml,palettes/Caelus.json}` | shell: bar, launcher, notifications, lock, palette |
 | `satty` | `~/.config/satty/config.toml` | screenshot annotation |
 | `steam` | `~/.local/share/applications/steam.desktop` | Steam launcher with `LD_PRELOAD` of lib32-extest (Steam Input on Wayland; argos only) |
@@ -105,7 +105,8 @@ How they reach everything:
   `.zshenv` (but not `.zshrc`, which is why nothing session-wide goes there),
   then adds `env.conf` on top.
 - Mango only passes the display and cursor variables to systemd. Apps
-  Noctalia launches run as **systemd units**, so `autostart.conf` runs
+  Noctalia launches run as **systemd units** (so does Ghostty, D-Bus-activated,
+  and the shells it opens inherit its environment), so `autostart.conf` runs
   `dbus-update-activation-environment --systemd --all` to hand them Mango's
   whole environment (one of the methods on the Arch wiki's systemd/User page).
 - `emacs.service` gets `SSH_AUTH_SOCK` from `gcr-ssh-agent.socket`, and
@@ -171,7 +172,13 @@ systemctl --user enable --now gcr-ssh-agent.socket syncthing.service
 systemctl --user enable cliphist.service cliphist-images.service emacs.service
 ```
 
-The Foot server isn't a service: Mango's `autostart.conf` runs `foot -s`.
+Ghostty needs nothing here: its package ships `app-com.mitchellh.ghostty.service`
+plus a D-Bus activation file, so Mango's Super+Return (`ghostty +new-window`)
+starts it on first use and it stays resident. Its shells inherit its
+environment, so after changing `.zshenv`/`env.conf` without logging out, run
+`systemctl --user restart app-com.mitchellh.ghostty.service` (closes every
+Ghostty window). If Ghostty ran before the first stow, it left an empty
+`~/.config/ghostty/config.ghostty` that blocks stow: delete it.
 
 ### bat
 
@@ -186,8 +193,8 @@ these are set with `kwriteconfig6` instead of being stowed:
 
 ```bash
 kwriteconfig6 --file kdeglobals --group General --key ColorScheme Caelus
-kwriteconfig6 --file kdeglobals --group General --key TerminalApplication foot
-kwriteconfig6 --file kdeglobals --group General --key TerminalService foot.desktop
+kwriteconfig6 --file kdeglobals --group General --key TerminalApplication ghostty
+kwriteconfig6 --file kdeglobals --group General --key TerminalService com.mitchellh.ghostty.desktop
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus-Dark
 kwriteconfig6 --file kdeglobals --group KDE --key SingleClick false
 
@@ -289,7 +296,7 @@ To keep the old one, restore `cert.pem` and `key.pem` into
 ## Caelus palette
 
 Hand-copied into the files that can't import anything (Neovim, Doom,
-LibreWolf CSS, Mango, tmux, foot, Noctalia…); keep them in sync with this
+LibreWolf CSS, Mango, tmux, Ghostty, Noctalia…); keep them in sync with this
 table.
 
 | Role | Name | Hex |

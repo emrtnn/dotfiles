@@ -25,7 +25,7 @@ sudo pacman -S --needed \
   neovim tree-sitter-cli curl tar gzip \
   clang cppcheck rustup zig php nodejs npm pnpm python uv \
   emacs-wayland libvterm libtool ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono \
-  mangowm xorg-xwayland noctalia foot foot-terminfo satty \
+  mangowm xorg-xwayland noctalia ghostty satty \
   grim slurp hyprpicker brightnessctl wl-clipboard wtype cliphist gpu-screen-recorder \
   qt5-wayland qt6-wayland xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
@@ -140,7 +140,7 @@ docker-compose-language-service, hadolint.
 | --- | --- | --- |
 | mangowm, xorg-xwayland | pacman | compositor |
 | noctalia | pacman | bar, launcher, notifications, lock screen, wallpaper |
-| foot, foot-terminfo | pacman | terminal (`foot -s` started by Mango) |
+| ghostty | pacman | terminal (D-Bus-activated by Mango's Super+Return; pulls in its terminfo and shell integration) |
 | satty, grim, slurp | pacman | screenshots and annotation |
 | hyprpicker, brightnessctl, wl-clipboard, wtype | pacman | color picker, brightness, clipboard, Super+C/X key injection |
 | cliphist | pacman | clipboard history (cliphist services) |
@@ -159,7 +159,7 @@ docker-compose-language-service, hadolint.
 | bibata-cursor-theme-bin | AUR | cursor |
 | qt6ct, breeze | pacman | Qt theming (Caelus palette) |
 | noto-fonts, noto-fonts-cjk, noto-fonts-emoji | pacman | base fonts |
-| ttf-jetbrains-mono-nerd, ttf-cascadia-code-nerd, otf-geist-mono-nerd, ttf-iosevka-nerd | pacman | Nerd Fonts (Iosevka: foot/Doom; GeistMono: Noctalia) |
+| ttf-jetbrains-mono-nerd, ttf-cascadia-code-nerd, otf-geist-mono-nerd, ttf-iosevka-nerd | pacman | Nerd Fonts (Iosevka: Ghostty/Doom; GeistMono: Noctalia) |
 | ttf-material-symbols-variable, ttf-twemoji-color | pacman, AUR | icon and emoji fonts |
 
 ### Apps

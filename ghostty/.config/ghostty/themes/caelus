@@ -1,0 +1,42 @@
+# Caelus for Ghostty (palette: ~/dotfiles/README.md). Same 16 colors as
+# Doom's terminal faces and Noctalia's terminal palette. Ghostty's own UI
+# (tabs, search bar, command palette, toasts) is GTK and already follows
+# Caelus through Noctalia's ~/.config/gtk-4.0/noctalia.css.
+
+background = #0f0f0f
+foreground = #f4decd
+
+# ANSI: normal bg red green orange blue magenta cyan gray9
+palette = 0=#0f0f0f
+palette = 1=#f16e65
+palette = 2=#72ca68
+palette = 3=#ef934d
+palette = 4=#71b4d6
+palette = 5=#e28dc6
+palette = 6=#7ec9a3
+palette = 7=#d9cdb5
+# bright: gray3 redLight greenLight orangeLight blueLight magentaLight cyanLight fg
+palette = 8=#3b403c
+palette = 9=#ef968f
+palette = 10=#98d694
+palette = 11=#f4b585
+palette = 12=#b0d4e8
+palette = 13=#ebadd6
+palette = 14=#abd4bf
+palette = 15=#f4decd
+
+cursor-color = #ef934d
+cursor-text = #0f0f0f
+selection-background = #ef934d
+selection-foreground = #0f0f0f
+
+# Scrollback search: candidates in yellow, the current match in THE accent
+search-background = #efbf71
+search-foreground = #0f0f0f
+search-selected-background = #ef934d
+search-selected-foreground = #0f0f0f
+
+# Splits: gray3 divider (like tmux's pane borders), unfocused splits dimmed
+# toward the background
+split-divider-color = #3b403c
+unfocused-split-fill = #0f0f0f
