@@ -38,6 +38,24 @@
 (setq scroll-margin 8
       evil-want-fine-undo t)
 
+;;; Window Management
+(defun my/find-file-split-right (file)
+  "Open FILE in a new window to the right."
+  (interactive "FFind file: ")
+  (select-window (split-window-right))
+  (find-file file))
+
+(defun my/find-file-split-below (file)
+  "Open FILE in a new window below."
+  (interactive "FFind file: ")
+  (select-window (split-window-below))
+  (find-file file))
+
+(after! embark
+  (map! :map embark-file-map
+        "v" #'my/find-file-split-right
+        "h" #'my/find-file-split-below))
+
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
