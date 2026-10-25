@@ -30,10 +30,14 @@ resize-overlay = never
 mouse-hide-while-typing = true
 
 # ---- Behaviour --------------------------------------------------------------
-# Keep running after the last window closes, like the old `foot --server`,
+# Keep running after the last window closes, like `foot --server`,
 # so new windows open instantly. The first SUPER+Return of a session
 # D-Bus-activates app-com.mitchellh.ghostty.service.
 quit-after-last-window-closed = false
+
+# Close windows, tabs and splits right away, even with something running in
+# them (no "process is still running" dialog).
+confirm-close-surface = false
 
 # New windows (SUPER+Return) start in ~; tabs and splits follow the current
 # directory (what tmux's `-c '#{pane_current_path}'` binds did).

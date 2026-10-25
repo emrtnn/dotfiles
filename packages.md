@@ -107,7 +107,7 @@ What each group is for, in the same order as the lists.
 | carapace-bin | AUR | shell completions |
 | starship | pacman | zsh prompt |
 | yazi + poppler, resvg, chafa, imagemagick, ffmpeg | pacman | file manager and its previews |
-| bat, tuicr, jujutsu, tmux | pacman | pager, code review TUI (`gd` alias), jj, multiplexer (TPM installs its plugins) |
+| bat, tuicr, jujutsu, tmux | pacman | pager, code review TUI (`gd` alias), jj, multiplexer (config meant for servers, no plugins) |
 
 ### Editors and toolchain
 
