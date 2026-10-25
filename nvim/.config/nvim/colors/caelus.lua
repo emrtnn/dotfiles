@@ -415,7 +415,7 @@ for name, spec in pairs(groups) do
 	vim.api.nvim_set_hl(0, name, spec)
 end
 
--- Terminal buffers use the same 16 colors as Foot/Kitty.
+-- Terminal buffers use the same 16 colors as Ghostty/Kitty.
 local ansi = {
 	c.bg, c.red, c.green, c.orange, c.blue, c.magenta, c.cyan, c.gray9,
 	c.gray3, c.redLight, c.greenLight, c.orangeLight, c.blueLight, c.magentaLight, c.cyanLight, c.fg,
