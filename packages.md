@@ -27,7 +27,7 @@ sudo pacman -S --needed \
   emacs-wayland libvterm libtool systemd-lsp ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono \
   graphviz tidy composer isync pandoc-cli scrot \
   mangowm xorg-xwayland noctalia ghostty satty \
-  grim slurp hyprpicker brightnessctl wl-clipboard wtype cliphist gpu-screen-recorder \
+  grim slurp hyprpicker brightnessctl wl-clipboard wtype gpu-screen-recorder \
   qt5-wayland qt6-wayland xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   dconf gvfs mesa vulkan-icd-loader xdg-utils polkit gsettings-desktop-schemas \
@@ -154,7 +154,6 @@ docker-compose-language-service, hadolint.
 | ghostty | pacman | terminal (D-Bus-activated by Mango's Super+Return; pulls in its terminfo and shell integration) |
 | satty, grim, slurp | pacman | screenshots and annotation |
 | hyprpicker, brightnessctl, wl-clipboard, wtype | pacman | color picker, brightness, clipboard, Super+C/X key injection |
-| cliphist | pacman | clipboard history (cliphist services) |
 | gpu-screen-recorder | pacman | Noctalia's screen recorder plugin |
 | qt5-wayland, qt6-wayland | pacman | Qt apps on Wayland |
 | xdg-desktop-portal, -wlr, -gtk | pacman | portals (screencast via wlr, the rest via gtk) |

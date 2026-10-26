@@ -51,7 +51,7 @@ Same on both machines:
 cd ~/dotfiles
 stow nvim doom mango
 stow --no-folding zsh git jj starship tmux yazi bat tuicr face wallpapers \
-  gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal cliphist ghostty noctalia satty
+  gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal ghostty noctalia satty
 stow --no-folding steam      # argos only (gaming)
 ```
 
@@ -83,7 +83,6 @@ if it reports a conflict, move the file away and run it again.
 | `mpv` | `~/.config/mpv/mpv.conf` | ModernZ instead of the built-in OSC |
 | `mango` *(linked)* | `~/.config/mango` | compositor config |
 | `xdg-desktop-portal` | `~/.config/xdg-desktop-portal/mango-portals.conf`, `~/.config/xdg-desktop-portal-wlr/config` | portals: wlr for screencast/screenshots, gtk for the rest |
-| `cliphist` | `cliphist.service`, `cliphist-images.service` | clipboard history for Noctalia |
 | `ghostty` | `~/.config/ghostty/{config.ghostty,themes/caelus}` | terminal: Caelus theme, tab/split keybinds, shell integration, screen/scrollback into Emacs |
 | `noctalia` | `~/.config/noctalia/{config.toml,palettes/Caelus.json}` | shell: bar, launcher, notifications, lock, palette |
 | `satty` | `~/.config/satty/config.toml` | screenshot annotation |
@@ -169,7 +168,7 @@ Check with `secret-tool lookup env BRAVE_API_KEY`, remove with
 ```bash
 systemctl --user daemon-reload
 systemctl --user enable --now gcr-ssh-agent.socket syncthing.service
-systemctl --user enable cliphist.service cliphist-images.service emacs.service
+systemctl --user enable emacs.service
 ```
 
 Ghostty needs nothing here: its package ships `app-com.mitchellh.ghostty.service`
