@@ -19,6 +19,12 @@ local tools = {
 	-- Python (The Astral Stack)
 	"ruff",
 	"basedpyright",
+	"black", -- Doom's :lang python formatter
+
+	-- Go (go from pacman); gore and gotests' REPL/test helpers for Doom
+	"gopls",
+	"gomodifytags",
+	"gotests",
 
 	-- Web: Biome lint/format + vtsls types; Prettier for Astro
 	"biome",
@@ -31,6 +37,7 @@ local tools = {
 	"json-lsp",
 	"html-lsp",
 	"css-lsp",
+	"stylelint", -- Doom's :lang web CSS linter
 
 	-- PHP: PHPactor language services + PHP-CS-Fixer formatting (php from pacman)
 	"phpactor",
@@ -39,6 +46,7 @@ local tools = {
 	-- Nix (The Modern Stack): nixd comes from the AUR
 	"alejandra",
 	"statix",
+	"nixfmt", -- Doom's nix-format-buffer
 
 	-- C/C++: clangd/clang-tidy come from pacman's clang; CMake formatted by
 	-- gersemi (cmake-format is unmaintained) and linted by cmakelint

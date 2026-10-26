@@ -25,6 +25,7 @@ sudo pacman -S --needed \
   neovim tree-sitter-cli curl tar gzip \
   clang cppcheck rustup zig php nodejs npm pnpm python uv \
   emacs-wayland libvterm libtool systemd-lsp ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono \
+  graphviz tidy composer isync pandoc-cli scrot \
   mangowm xorg-xwayland noctalia ghostty satty \
   grim slurp hyprpicker brightnessctl wl-clipboard wtype cliphist gpu-screen-recorder \
   qt5-wayland qt6-wayland xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
@@ -52,7 +53,7 @@ rustup default stable
 rustup component add rust-analyzer clippy rustfmt
 
 paru -S --needed \
-  carapace-bin bibata-cursor-theme-bin ttf-twemoji-color ttf-all-the-icons \
+  carapace-bin bibata-cursor-theme-bin ttf-twemoji-color ttf-all-the-icons ttf-symbola mu \
   helium-browser-bin pi-coding-agent-bin mpv-modernz vesktop-bin onlyoffice-bin localsend-bin \
   limine-mkinitcpio-hook sddm-silent-theme \
   virtio-win quickemu foundry-bin \
@@ -127,8 +128,17 @@ What each group is for, in the same order as the lists.
 | systemd-lsp | pacman | LSP for systemd unit files in Doom |
 | ttf-nerd-fonts-symbols(-mono), ttf-all-the-icons | pacman, AUR | Doom's icons |
 | pi-coding-agent-bin | AUR | pi coding agent |
+| graphviz, tidy, composer, pandoc-cli, scrot | pacman | Doom: org-roam graphs, HTML formatting, PHP, markdown preview/org export, org-download check |
+| isync, mu | pacman, AUR | Doom's mu4e: mail sync (`mbsync`) and indexing |
+| ttf-symbola | AUR | Emacs' fallback font for symbols |
 
-mason installs: ruff, basedpyright, biome, vtsls, typescript-language-server,
+User-level, outside pacman (Doom doctor): `GOBIN=~/.local/bin go install
+github.com/x-motemen/gore/cmd/gore@latest github.com/jessfraz/dockfmt@latest`,
+`uv tool install pytest`, `uv tool install pipenv`, `uv tool install pynose`
+(`nosetests`; nose itself is dead on Python 3.12+), `npm i -g ethlint` (`solium`).
+
+mason installs: ruff, basedpyright, black, gopls, gomodifytags, gotests,
+stylelint, nixfmt, biome, vtsls, typescript-language-server,
 astro-language-server, prettier, yaml-language-server, json-lsp, html-lsp,
 css-lsp, phpactor, php-cs-fixer, alejandra, statix, neocmakelsp, cmakelint,
 gersemi, zls, solidity (solc), vscode-solidity-server, lua-language-server,
