@@ -16,12 +16,3 @@ magenta = "#e28dc6"
 cyan = "#7ec9a3"
 white = "#f4decd"
 orange = "#ef934d"
-
-# Default deleted symbol ✘ renders wider than one cell and overlaps the
-# brackets; swap only that glyph and keep the default look otherwise.
-[git_status]
-deleted = "x"
-
-# ✗ on error; the extra space keeps the glyph from running into the cursor.
-[character]
-error_symbol = "[✗  ](bold red)"

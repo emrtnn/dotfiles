@@ -10,7 +10,13 @@
 # ---- Look ------------------------------------------------------------------
 theme = caelus
 
-font-family = Iosevka Nerd Font Mono
+# Iosevka Term, not "Iosevka Nerd Font Mono": the Nerd Mono patch only squeezes
+# the advance of wide symbols (▲▼● …) to one cell but leaves the outlines
+# double-width, so they overlap neighbours (btop). Term draws them half-width.
+# Nerd Font icons come from Ghostty's built-in symbols fallback.
+# Installed per-user in ~/.local/share/fonts/IosevkaTerm (PkgTTF-IosevkaTerm, Extended* removed).
+# Only the normal-width TTFs are installed (no "Extended" faces).
+font-family = Iosevka Term
 font-size = 16
 
 window-padding-x = 7
