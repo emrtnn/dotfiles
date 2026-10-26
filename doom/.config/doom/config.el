@@ -24,8 +24,18 @@
 (setq doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 18)
       doom-variable-pitch-font (font-spec :family "GeistMono Nerd Font" :size 20))
 
+;;; EDITOR CONFIG
 ;; Set line numbers relative to cursor position
 (setq display-line-numbers-type 'relative)
+
+;; Indentation, mirroring nvim (tabstop=2 shiftwidth=2 expandtab shiftround).
+(setq-default indent-tabs-mode nil
+              tab-width 2
+              standard-indent 2
+              evil-shift-width 2
+              evil-shift-round t)
+
+(setq +whitespace-guess-in-projects t)
 
 ;; Cursor color per evil state, matching the modeline indicator.
 (setq evil-normal-state-cursor   '(box "#ef934d")
@@ -136,3 +146,30 @@
 ;; Astro
 (add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
 (add-hook 'web-mode-hook #'lsp! 'append)
+
+;;; AI
+;; Pi Coding agent
+(defun ai/pi-agent ()
+  "Open the pi coding agent in ghostel in a vertical split, rooted at the project.
+Reuses the buffer for the project if it is still running."
+  (interactive)
+  (require 'ghostel)
+  (let* ((root (or (doom-project-root) default-directory))
+         (name (format "*pi:%s*" (abbreviate-file-name root)))
+         (buf  (get-buffer name)))
+    ;; A leftover from a failed start is not a terminal: throw it away.
+    (when (and buf (not (eq (buffer-local-value 'major-mode buf) 'ghostel-mode)))
+      (kill-buffer buf)
+      (setq buf nil))
+    (if-let ((win (and buf (get-buffer-window buf))))
+        (select-window win)
+      (select-window (split-window-right (- (floor (* 0.35 (window-total-width))))))
+      (if buf
+          (switch-to-buffer buf)
+        (setq buf (get-buffer-create name))
+        (with-current-buffer buf
+          (setq default-directory root))
+        (switch-to-buffer buf)
+        (ghostel-exec buf (or (executable-find "pi") "pi"))))))
+
+(map! :leader :desc "Pi coding agent" "o p" #'ai/pi-agent)
