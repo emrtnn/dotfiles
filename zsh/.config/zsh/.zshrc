@@ -4,8 +4,15 @@ typeset -U path cdpath fpath manpath
 
 [[ -d /usr/share/zsh/$ZSH_VERSION/help ]] && HELPDIR="/usr/share/zsh/$ZSH_VERSION/help"
 
-# Use viins keymap as the default.
-bindkey -v
+# Use viins keymap as the default -- except inside Emacs (ghostel, vterm...),
+# where evil already provides vi editing on top of the terminal. Running zsh's
+# own vi mode there means two modal layers fighting over ESC, so use the emacs
+# keymap and let evil-ghostel drive the line (ESC -> evil normal state).
+if [[ -n $INSIDE_EMACS ]]; then
+  bindkey -e
+else
+  bindkey -v
+fi
 
 autoload -U compinit && compinit
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -50,6 +57,13 @@ zle -N edit-command-line
 bindkey -M vicmd 'v' visual-mode
 bindkey -M vicmd '^o' edit-command-line
 bindkey -M viins '^?' backward-delete-char
+# Delete key (ESC[3~): unbound in vi mode by default, so ESC enters vicmd and
+# "3~" swaps case of 3 chars. Bind it explicitly (and terminfo kdch1 if set).
+for km in emacs viins vicmd; do
+  bindkey -M $km '^[[3~' delete-char
+  [[ -n ${terminfo[kdch1]} ]] && bindkey -M $km "${terminfo[kdch1]}" delete-char
+done
+unset km
 
 bindkey '^[[1;5C' forward-word
 bindkey '^[[1;5D' backward-word
@@ -60,18 +74,21 @@ zmodload zsh/complist
 bindkey '^[[Z' reverse-menu-complete
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
-# Cursor shape: blinking block for insert, static block for normal/visual
-_cursor_block_blink() { printf '\e[1 q'; }
-_cursor_block_static() { printf '\e[2 q'; }
-zle-keymap-select() {
-  case $KEYMAP in
-    vicmd|visual) _cursor_block_static ;;
-    *)            _cursor_block_blink ;;
-  esac
-}
-zle -N zle-keymap-select
-zle-line-init() { _cursor_block_blink; }
-zle -N zle-line-init
+# Cursor shape: blinking block for insert, static block for normal/visual.
+# Skipped inside Emacs, where evil owns the cursor shape.
+if [[ -z $INSIDE_EMACS ]]; then
+  _cursor_block_blink() { printf '\e[1 q'; }
+  _cursor_block_static() { printf '\e[2 q'; }
+  zle-keymap-select() {
+    case $KEYMAP in
+      vicmd|visual) _cursor_block_static ;;
+      *)            _cursor_block_blink ;;
+    esac
+  }
+  zle -N zle-keymap-select
+  zle-line-init() { _cursor_block_blink; }
+  zle -N zle-line-init
+fi
 
 # Ignore completion case
 zstyle ':completion:*' matcher-list \
