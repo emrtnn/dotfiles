@@ -620,7 +620,7 @@ sudo pacman -S --needed \
   clang cppcheck rustup zig php nodejs npm pnpm python uv \
   emacs-wayland libvterm libtool ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono \
   ninja valgrind gdb gef pkgconf \
-  mangowm xorg-xwayland noctalia foot foot-terminfo satty \
+  mangowm xorg-xwayland noctalia ghostty ghostty-terminfo satty \
   grim slurp hyprpicker brightnessctl wl-clipboard wtype cliphist gpu-screen-recorder \
   qt5-wayland qt6-wayland xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
   sddm kwin qt6-svg qt6-virtualkeyboard qt6-multimedia-ffmpeg accountsservice \
@@ -628,7 +628,7 @@ sudo pacman -S --needed \
   dconf gvfs mesa vulkan-icd-loader xdg-utils polkit gsettings-desktop-schemas \
   adw-gtk-theme nwg-look papirus-icon-theme qt6ct breeze \
   noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd \
-  otf-geist-mono-nerd ttf-iosevka-nerd ttf-material-symbols-variable \
+  otf-geist-mono-nerd ttf-iosevka-nerd ttc-iosevka ttf-material-symbols-variable \
   evince playerctl torbrowser-launcher telegram-desktop librewolf signal-desktop sequoia-sq mpv \
   dolphin ark kio-fuse ffmpegthumbs kdegraphics-thumbnailers kconfig archlinux-xdg-menu \
   gwenview kimageformats keepassxc syncthing gnome-keyring gcr-4 libsecret \
@@ -709,14 +709,14 @@ the repos.
 | nixd, foundry-bin | Nix LSP (not in mason); `forge fmt` (extra's `foundry` is unrelated) |
 | emacs-wayland, libvterm, libtool, cmake, nerd symbols, all-the-icons | Doom Emacs, vterm, icons |
 | pi-coding-agent-bin | pi coding agent |
-| mangowm, xorg-xwayland, noctalia, foot | compositor, shell (bar, launcher, lock…), terminal |
+| mangowm, xorg-xwayland, noctalia, ghostty | compositor, shell (bar, launcher, lock…), terminal |
 | satty, grim, slurp, hyprpicker, brightnessctl, wl-clipboard, wtype, cliphist, gpu-screen-recorder | screenshots, picker, brightness, clipboard, key injection, recorder |
 | qt5/qt6-wayland, xdg-desktop-portal(-wlr, -gtk) | Qt on Wayland; portals (screencast via wlr) |
 | sddm, kwin, sddm-silent-theme, qt6-svg, qt6-virtualkeyboard, qt6-multimedia-ffmpeg, accountsservice | login screen; the theme crashes without the Qt modules |
 | pipewire (+ alsa, pulse, jack), wireplumber | audio |
 | dconf, gvfs, mesa, vulkan-icd-loader, xdg-utils, polkit, gsettings-desktop-schemas | desktop plumbing |
 | adw-gtk-theme, nwg-look, papirus-icon-theme, bibata-cursor-theme-bin, qt6ct, breeze | GTK/Qt theming, icons, cursor |
-| noto-fonts(-cjk, -emoji), nerd fonts, material symbols, twemoji | fonts (Iosevka: foot/Doom; GeistMono: Noctalia) |
+| noto-fonts(-cjk, -emoji), nerd fonts, material symbols, twemoji | fonts (Iosevka Term: Ghostty; Iosevka Nerd: Doom; GeistMono: Noctalia) |
 | librewolf, helium-browser-bin, torbrowser-launcher | browsers |
 | telegram-desktop, signal-desktop, vesktop-bin | chat |
 | evince, onlyoffice-bin, mpv, mpv-modernz, playerctl | PDF, office, video + OSC, media keys |
@@ -746,7 +746,7 @@ mkdir -p ~/.config/systemd/user ~/.local/bin ~/.local/share ~/Pictures
 cd ~/dotfiles
 stow nvim doom mango
 stow --no-folding zsh git jj tmux yazi bat tuicr face wallpapers \
-  gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal foot noctalia satty
+  gtk cursor qt dolphin mimeapps emacs mpv xdg-desktop-portal ghostty noctalia satty
 ```
 
 - `mkdir -p …` first: these must be real directories, or stow "folds" all of
@@ -1203,8 +1203,9 @@ systemctl --user enable --now gcr-ssh-agent.socket syncthing.service
 - `gcr-ssh-agent.socket`: the SSH agent backed by GNOME Keyring;
   `~/.config/zsh/.zshenv` points `SSH_AUTH_SOCK` at it. Don't enable OpenSSH's
   `ssh-agent`.
-- The cliphist and emacs units start with the graphical session. Foot's
-  server isn't a unit: Mango's `autostart.conf` runs `foot -s`.
+- The cliphist and emacs units start with the graphical session. Ghostty's
+  resident instance isn't enabled: the first SUPER+Return D-Bus-activates
+  it and `quit-after-last-window-closed = false` keeps it running.
 - "Failed to connect to user scope bus": you're in a `su` shell, not a real
   login. Log in directly.
 
@@ -1233,8 +1234,8 @@ gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'
 gsettings set org.gnome.desktop.interface cursor-size 24
 
 kwriteconfig6 --file kdeglobals --group General --key ColorScheme Caelus
-kwriteconfig6 --file kdeglobals --group General --key TerminalApplication foot
-kwriteconfig6 --file kdeglobals --group General --key TerminalService foot.desktop
+kwriteconfig6 --file kdeglobals --group General --key TerminalApplication "ghostty --gtk-single-instance=false --working-directory=inherit"
+kwriteconfig6 --file kdeglobals --group General --key TerminalService --delete
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus-Dark
 kwriteconfig6 --file kdeglobals --group KDE --key SingleClick false
 kwriteconfig6 --file dolphinrc --group General --key RememberOpenedTabs true
@@ -1256,6 +1257,11 @@ bat cache --build
 - `gsettings`: GTK settings in dconf (dark, adw-gtk3, Papirus, Bibata).
 - `kwriteconfig6`: single keys in KDE's files. Not stowed because Dolphin
   rewrites them.
+- Terminal: no `TerminalService`. KIO would launch Ghostty's D-Bus-activated
+  `.desktop` entry, and the resident instance ignores Dolphin's directory.
+  A separate process with `--working-directory=inherit` is needed, because
+  `config.ghostty` sets `working-directory = home`. Otherwise "Open Terminal
+  Here" (Shift+F4) opens in `~`.
 - `kbuildsycoca6`: Dolphin's "Open With" outside Plasma (rerun after
   installing apps).
 - `bat cache --build`: registers the Caelus theme.
@@ -1526,7 +1532,7 @@ globals), `.stowrc` (target `~`), `.gitignore` (blocks keys and secrets).
 | `mpv` | `~/.config/mpv/mpv.conf` | ModernZ OSC |
 | `xdg-desktop-portal` | `mango-portals.conf`, `xdg-desktop-portal-wlr/config` | wlr for screencast/screenshots, gtk for the rest |
 | `cliphist` | `cliphist.service`, `cliphist-images.service` | clipboard history for Noctalia |
-| `foot` | `~/.config/foot/foot.ini` | terminal |
+| `ghostty` | `~/.config/ghostty/{config.ghostty,themes/caelus}` | terminal |
 | `noctalia` | `~/.config/noctalia/{config.toml,palettes/Caelus.json}` | bar, launcher, notifications, lock, palette |
 | `satty` | `~/.config/satty/config.toml` | screenshot annotation |
 
@@ -1549,7 +1555,7 @@ After changing `.zshenv` or `env.conf`, log out and back in.
 ### 19.3 Caelus palette
 
 Hand-copied into files that can't import anything (Neovim, Doom, LibreWolf
-CSS, Mango, tmux, foot, Noctalia…); keep them in sync with this table.
+CSS, Mango, tmux, Ghostty, Noctalia…); keep them in sync with this table.
 
 | Role | Name | Hex |
 | --- | --- | --- |

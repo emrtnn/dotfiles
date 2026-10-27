@@ -10,12 +10,6 @@
 # ---- Look ------------------------------------------------------------------
 theme = caelus
 
-# Iosevka Term, not "Iosevka Nerd Font Mono": the Nerd Mono patch only squeezes
-# the advance of wide symbols (▲▼● …) to one cell but leaves the outlines
-# double-width, so they overlap neighbours (btop). Term draws them half-width.
-# Nerd Font icons come from Ghostty's built-in symbols fallback.
-# Installed per-user in ~/.local/share/fonts/IosevkaTerm (PkgTTF-IosevkaTerm, Extended* removed).
-# Only the normal-width TTFs are installed (no "Extended" faces).
 font-family = Iosevka Term
 font-size = 16
 
@@ -36,7 +30,7 @@ resize-overlay = never
 mouse-hide-while-typing = true
 
 # ---- Behaviour --------------------------------------------------------------
-# Keep running after the last window closes, like `foot --server`,
+# Keep running after the last window closes (a resident server),
 # so new windows open instantly. The first SUPER+Return of a session
 # D-Bus-activates app-com.mitchellh.ghostty.service.
 quit-after-last-window-closed = false
@@ -47,6 +41,9 @@ confirm-close-surface = false
 
 # New windows (SUPER+Return) start in ~; tabs and splits follow the current
 # directory (what tmux's `-c '#{pane_current_path}'` binds did).
+# `home` also overrides the caller's cwd: launchers that rely on it (Dolphin's
+# "Open Terminal Here", `ghostty` run from a shell) must pass
+# --working-directory=inherit (or a path) to keep it.
 working-directory = home
 window-inherit-working-directory = false
 tab-inherit-working-directory = true
@@ -116,7 +113,7 @@ keybind = ctrl+shift+arrow_down=jump_to_prompt:1
 # Hand text to Emacs in a new frame (xdg-open; text/plain is
 # emacsclient-frame.desktop in the mimeapps package):
 #   ctrl+shift+o  visible screen: pick a URL with SPC s l (hints) or SPC s L
-#                 (list). Same key as foot's URL mode.
+#                 (list).
 #   ctrl+shift+s  the whole scrollback: search, copy, grep it as a buffer.
 keybind = ctrl+shift+o=write_screen_file:open,plain
 keybind = ctrl+shift+s=write_scrollback_file:open,plain
