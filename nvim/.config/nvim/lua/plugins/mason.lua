@@ -29,6 +29,7 @@ local tools = {
 	-- Web: Biome lint/format + vtsls types; Prettier for Astro
 	"biome",
 	"vtsls",
+	"tailwindcss-language-server", -- Tailwind classes (Doom's lsp-tailwindcss uses it too)
 	"typescript-language-server", -- Doom/lsp-mode's TS client (no vtsls client)
 	"astro-language-server",
 	"prettier",
