@@ -54,3 +54,11 @@
 
 ;; systemd unit files (.service, .timer, .socket, ...): syntax highlighting
 (package! systemd)
+
+;; Extra flymake checkers not shipped with the +flymake flag. Provides the
+;; `flymake-collection-define' macro (used for custom cppcheck/cmakelint/hadolint
+;; backends in config.el) and ready-made checkers like `flymake-collection-statix'.
+(package! flymake-collection)
+
+;; lsp-mode client for Biome (lint + code actions); lsp-mode ships none.
+(package! lsp-biome :recipe (:host github :repo "cxa/lsp-biome"))

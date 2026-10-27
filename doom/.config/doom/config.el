@@ -147,6 +147,179 @@
 (add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
 (add-hook 'web-mode-hook #'lsp! 'append)
 
+;;; LSP SERVERS
+
+;; C/C++ : clangd flags
+(after! lsp-clangd
+  (setq lsp-clients-clangd-args
+        '("--background-index" "--clang-tidy" "--header-insertion=iwyu"
+          "--completion-style=detailed" "--function-arg-placeholders"
+          "--fallback-style=llvm")))
+
+;; Rust : rust-analyzer (clippy on check, all features, build + proc-macro)
+(after! lsp-rust
+  (setq lsp-rust-all-features t
+        lsp-rust-analyzer-cargo-run-build-scripts t
+        lsp-rust-analyzer-proc-macro-enable t
+        lsp-rust-analyzer-cargo-watch-command "clippy"))
+
+;; Python : basedpyright (types/hover) + ruff add-on (lint + organize-imports)
+;; IMPORTANT: these must be set BEFORE lsp-pyright loads. lsp-pyright registers
+;; its server dependency (`basedpyright-langserver') from
+;; `lsp-pyright-langserver-command' AT LOAD TIME, so `after!' would be too late
+;; (lsp would look for the nonexistent `pyright-langserver' and silently fall
+;; back to ruff only). A plain top-level setq runs at config load, before any
+;; python buffer triggers lsp-pyright, and defcustom respects the prior value.
+(setq lsp-pyright-langserver-command "basedpyright"
+      lsp-pyright-disable-organize-imports t          ; ruff owns import organization
+      lsp-pyright-type-checking-mode "basic"
+      ;; built-in severity overrides (ruff/basedpyright split, matching nvim)
+      lsp-pyright-diagnostic-severity-overrides
+      '(("reportUnusedImport"     . "none")
+        ("reportUnusedVariable"   . "none")
+        ("reportUndefinedVariable" . "none")
+        ("reportUnboundVariable"  . "none")
+        ("reportRedeclaration"    . "none")
+        ("reportDuplicateImport"  . "none")))
+;; ruff starts automatically as an add-on once `ruff' is on PATH. nvim disables
+;; ruff's hover so basedpyright owns it; lsp-mode has no per-client hover toggle,
+;; so if hover becomes noisy, uncomment and verify this:
+;; (add-hook 'lsp-after-initialize-hook
+;;           (lambda ()
+;;             (when (eq (lsp--client-server-id (lsp--workspace-client lsp--cur-workspace)) 'ruff)
+;;               (lsp:set-server-capabilities-hover-provider?
+;;                (lsp--workspace-server-capabilities lsp--cur-workspace) nil))))
+
+;; Lua : lua-language-server
+(after! lsp-lua
+  (setq lsp-lua-completion-call-snippet "Replace"
+        lsp-lua-hint-enable t
+        lsp-lua-telemetry-enable nil))
+
+;; TS/JS : inlay hints (ts-ls; lsp-mode drives both ts.* and js.* from these)
+(after! lsp-javascript
+  (setq lsp-javascript-display-parameter-name-hints "literals"
+        lsp-javascript-display-parameter-type-hints t
+        lsp-javascript-display-variable-type-hints t
+        lsp-javascript-display-property-declaration-type-hints t
+        lsp-javascript-display-return-type-hints t
+        lsp-javascript-display-enum-member-value-hints t))
+
+;; Solidity : use solhint (no defcustom -> JSON path)
+(after! lsp-mode
+  (lsp-register-custom-settings '(("solidity.linter" "solhint"))))
+
+;; Docker : let hadolint own these best-practice diagnostics
+(after! lsp-dockerfile
+  (setq lsp-dockerfile-deprecated-maintainer "ignore"
+        lsp-dockerfile-directive-casing "ignore"
+        lsp-dockerfile-empty-continuation-line "ignore"
+        lsp-dockerfile-instruction-casing "ignore"
+        lsp-dockerfile-instruction-cmd-multiple "ignore"
+        lsp-dockerfile-instruction-entrypoint-multiple "ignore"
+        lsp-dockerfile-instruction-healthcheck-multiple "ignore"
+        lsp-dockerfile-instruction-json-single-quotes "ignore"))
+
+;; Biome (JS/TS/JSON/CSS lint + code actions) via the third-party `lsp-biome'
+;; (packages.el). Runs as an add-on next to ts-ls / css-ls. Formatting stays in
+;; apheleia.
+(after! lsp-biome
+  (advice-add 'lsp-biome--has-config-p :override #'always))
+
+;; Tailwind: lsp-mode's built-in client (add-on, starts when the project has a
+;; tailwind config or tailwindcss v4 in package.json). Its default mode list
+;; lacks css-ts-mode, which Doom uses for .css.
+(after! lsp-tailwindcss
+  (add-to-list 'lsp-tailwindcss-major-modes 'css-ts-mode))
+
+;; CSS: don't flag Tailwind v4 directives (@theme, @apply, @utility...) as
+;; unknown at-rules.
+(after! lsp-css
+  (setq lsp-css-lint-unknown-at-rules "ignore"))
+
+;;; FORMATTING (apheleia)
+(after! apheleia
+  ;; --- formatters apheleia doesn't define out of the box ---
+  (setf (alist-get 'ruff-fix apheleia-formatters)        ; ruff lint autofix (stdin->stdout)
+        '("ruff" "check" "-n" "--fix" "--fix-only" "--stdin-filename" filepath "-"))
+  (setf (alist-get 'alejandra apheleia-formatters)
+        '("alejandra" "--quiet" "-"))
+  (setf (alist-get 'forge-fmt apheleia-formatters)
+        '("forge" "fmt" "--raw" "-"))
+  (setf (alist-get 'php-cs-fixer apheleia-formatters)    ; no stdin -> use apheleia `inplace'
+        '("php-cs-fixer" "fix" "--using-cache=no" "--quiet" inplace))
+  ;; gersemi: 2-space indent unless the project ships a .gersemirc.
+  (setf (alist-get 'gersemi apheleia-formatters)
+        '("gersemi"
+          (when (not (locate-dominating-file default-directory ".gersemirc"))
+            (list "--indent" "2"))
+          "-"))
+  ;; clang-format: LLVM + PointerAlignment Left, unless a project .clang-format
+  ;; exists (clang-format reads that itself).
+  (setf (alist-get 'clang-format apheleia-formatters)
+        '("clang-format"
+          "-assume-filename"
+          (or (apheleia-formatters-local-buffer-file-name)
+              (apheleia-formatters-mode-extension) ".c")
+          (when (not (locate-dominating-file default-directory ".clang-format"))
+            "--style={BasedOnStyle: LLVM, PointerAlignment: Left}")))
+
+  ;; --- per-mode formatter choice (classic + tree-sitter modes) ---
+  ;; Order for python mirrors conform: lint-fix, organize-imports, then format.
+  (dolist (entry '((python-mode        . (ruff-fix ruff-isort ruff))
+                   (python-ts-mode     . (ruff-fix ruff-isort ruff))
+                   (js-mode            . biome)
+                   (js-ts-mode         . biome)
+                   (typescript-mode    . biome)
+                   (typescript-ts-mode . biome)
+                   (tsx-ts-mode        . biome)
+                   (json-mode          . biome)
+                   (js-json-mode       . biome)
+                   (json-ts-mode       . biome)
+                   (css-mode           . biome)
+                   (css-ts-mode        . biome)
+                   (nix-mode           . alejandra)
+                   (nix-ts-mode        . alejandra)
+                   (php-mode           . php-cs-fixer)
+                   (php-ts-mode        . php-cs-fixer)
+                   (cmake-mode         . gersemi)
+                   (cmake-ts-mode      . gersemi)
+                   (solidity-mode      . forge-fmt)
+                   (bash-ts-mode       . shfmt)))
+    (setf (alist-get (car entry) apheleia-mode-alist) (cdr entry))))
+;; Note: lua->stylua, rust->rustfmt, zig->zig-fmt, sh->shfmt and web-mode->prettier
+;; (for .astro) are already apheleia/Doom defaults, so they need no entry here.
+
+;;; DIAGNOSTICS (flymake)
+(after! flymake
+  (setq flymake-show-diagnostics-at-end-of-line 'short))
+
+;; Emacs 31 refuses to byte-compile (hence flymake-check) elisp in "untrusted"
+;; files, since macro expansion runs code. Doom only trusts the ~/.config/{doom,
+;; emacs}/ *symlink* paths, but these live in ~/dotfiles and dev projects in
+;; ~/Dev, so trust those too. Entries must match the ABBREVIATED
+;; `buffer-file-truename' (the ~/ form), not an expanded /home/... path.
+(dolist (dir '("~/dotfiles/" "~/Dev/"))
+  (add-to-list 'trusted-content dir))
+
+(custom-set-faces!
+  '(flymake-error   :underline nil)
+  '(flymake-warning :underline nil)
+  '(flymake-note    :underline nil))
+
+;;; EXTRA LINTERS (flymake backends with no language server)
+;; cppcheck / cmakelint / hadolint / statix run alongside the LSP diagnostics.
+;; Backend definitions live in +flymake-linters.el (ported from nvim lint.lua).
+(load! "+flymake-linters")
+(add-hook! '(c-mode-hook c++-mode-hook c-ts-mode-hook c++-ts-mode-hook
+             cmake-mode-hook cmake-ts-mode-hook
+             dockerfile-mode-hook dockerfile-ts-mode-hook
+             nix-mode-hook nix-ts-mode-hook)
+           #'+my/flymake-extra-linters)
+;; Re-add the extra backends after lsp sets up its own flymake backend.
+(with-eval-after-load 'lsp-diagnostics
+  (add-hook 'lsp-diagnostics-mode-hook #'+my/flymake-extra-linters))
+
 ;;; AI
 ;; Pi Coding agent
 (defun ai/pi-agent ()
