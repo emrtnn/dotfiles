@@ -19,3 +19,5 @@ auth.json
 web-search.json
 .sops.yaml
 secrets/
+
+lazy-lock.json
