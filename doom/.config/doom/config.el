@@ -290,6 +290,16 @@
 ;; Note: lua->stylua, rust->rustfmt, zig->zig-fmt, sh->shfmt and web-mode->prettier
 ;; (for .astro) are already apheleia/Doom defaults, so they need no entry here.
 
+;;; SPELLCHECK (spell-fu + aspell, English and Spanish at the same time)
+;; A word is accepted if it appears in either dictionary.
+(setq ispell-dictionary "en")
+
+(add-hook! 'spell-fu-mode-hook
+  (defun my/spell-fu-add-spanish-h ()
+    (spell-fu-dictionary-add (spell-fu-get-ispell-dictionary "es"))
+    (spell-fu-dictionary-add
+     (spell-fu-get-personal-dictionary "es-personal" (expand-file-name "ispell/es.pws" doom-data-dir)))))
+
 ;;; DIAGNOSTICS (flymake)
 (after! flymake
   (setq flymake-show-diagnostics-at-end-of-line 'short))
