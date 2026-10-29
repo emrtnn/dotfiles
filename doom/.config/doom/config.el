@@ -25,6 +25,11 @@
       doom-variable-pitch-font (font-spec :family "GeistMono Nerd Font" :size 20))
 
 ;;; EDITOR CONFIG
+;; Configure file reload on external changes
+(setq auto-revert-use-notify t)
+(setq global-auto-revert-non-file-buffers t)
+(global-auto-revert-mode 1)
+
 ;; Set line numbers relative to cursor position
 (setq display-line-numbers-type 'relative)
 
