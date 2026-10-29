@@ -120,7 +120,7 @@
 (setq vterm-max-scrollback 100000)
 
 ;; Projectile project autodiscovery
-(setq projectile-project-search-path '(("~/Dev" . 2)))
+(setq projectile-project-search-path '(("~/Projects" . 2)))
 
 ;; Dired keybinds and configuration
 (map! :after dired
@@ -307,9 +307,8 @@
 ;; Emacs 31 refuses to byte-compile (hence flymake-check) elisp in "untrusted"
 ;; files, since macro expansion runs code. Doom only trusts the ~/.config/{doom,
 ;; emacs}/ *symlink* paths, but these live in ~/dotfiles and dev projects in
-;; ~/Dev, so trust those too. Entries must match the ABBREVIATED
 ;; `buffer-file-truename' (the ~/ form), not an expanded /home/... path.
-(dolist (dir '("~/dotfiles/" "~/Dev/"))
+(dolist (dir '("~/dotfiles/" "~/Projects/"))
   (add-to-list 'trusted-content dir))
 
 (custom-set-faces!
