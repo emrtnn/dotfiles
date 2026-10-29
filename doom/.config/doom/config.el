@@ -49,9 +49,17 @@
       evil-replace-state-cursor  '(hbar "#f16e65")
       evil-operator-state-cursor '(hollow "#efbf71"))
 
-;;; Editing
+;; Buffer
 (setq scroll-margin 8
       evil-want-fine-undo t)
+
+;; Markdown
+(after! markdown-mode
+  (setq markdown-hide-markup t
+        markdown-header-scaling t
+        markdown-fontify-code-blocks-natively t
+        markdown-enable-wiki-links t)
+  (add-hook 'markdown-mode-hook #'markdown-display-inline-images))
 
 ;;; Window Management
 (defun my/find-file-split-right (file)
