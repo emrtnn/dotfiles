@@ -343,7 +343,7 @@ Reuses the buffer for the project if it is still running."
     (when (and buf (not (eq (buffer-local-value 'major-mode buf) 'ghostel-mode)))
       (kill-buffer buf)
       (setq buf nil))
-    (if-let ((win (and buf (get-buffer-window buf))))
+    (if-let* ((win (and buf (get-buffer-window buf))))
         (select-window win)
       (select-window (split-window-right (- (floor (* 0.35 (window-total-width))))))
       (if buf
@@ -354,4 +354,28 @@ Reuses the buffer for the project if it is still running."
         (switch-to-buffer buf)
         (ghostel-exec buf (or (executable-find "pi") "pi"))))))
 
-(map! :leader :desc "Pi coding agent" "o p" #'ai/pi-agent)
+(defun ai/pi-agent-kill ()
+  "Kill the pi agent buffer for the current project and quit its window.
+When called from inside a pi buffer, kill that one."
+  (interactive)
+  (let* ((buf (if (string-prefix-p "*pi:" (buffer-name))
+                  (current-buffer)
+                (get-buffer (format "*pi:%s*"
+                                    (abbreviate-file-name
+                                     (or (doom-project-root) default-directory)))))))
+    (if (not (buffer-live-p buf))
+        (message "No pi agent buffer for this project")
+      (let ((win (get-buffer-window buf)))
+        ;; Don't prompt about the running process.
+        (when-let* ((proc (get-buffer-process buf)))
+          (set-process-query-on-exit-flag proc nil))
+        (kill-buffer buf)
+        (when (and (window-live-p win) (not (one-window-p t)))
+          (delete-window win))))))
+
+(defvar-keymap ai/pi-agent-map
+  :doc "Keymap for the pi coding agent."
+  "p" '("Open pi agent" . ai/pi-agent)
+  "k" '("Kill pi agent" . ai/pi-agent-kill))
+
+(map! :leader :desc "pi agent" "o p" ai/pi-agent-map)
