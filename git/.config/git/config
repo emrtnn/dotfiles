@@ -17,6 +17,7 @@
 [core]
 	autocrlf = "input"
 	editor = "nvim"
+  pager = "less -F"
 
 [diff]
 	algorithm = "histogram"
