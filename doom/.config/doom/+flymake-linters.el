@@ -130,6 +130,9 @@ e.g. cmake/dockerfile/nix)."
   (require 'flymake-collection-statix nil t)
   (let ((backends
          (cond
+          ;; solidity-mode derives from c-mode (and runs `c-mode-hook'), but
+          ;; cppcheck would parse Solidity as C. Its LSP covers diagnostics.
+          ((derived-mode-p 'solidity-mode) nil)
           ((derived-mode-p 'c-mode 'c++-mode 'c-ts-mode 'c++-ts-mode)
            '(+flymake-collection-cppcheck))
           ((derived-mode-p 'cmake-mode 'cmake-ts-mode)

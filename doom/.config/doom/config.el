@@ -218,9 +218,9 @@
         lsp-javascript-display-return-type-hints t
         lsp-javascript-display-enum-member-value-hints t))
 
-;; Solidity : use solhint (no defcustom -> JSON path)
-(after! lsp-mode
-  (lsp-register-custom-settings '(("solidity.linter" "solhint"))))
+;; Solidity : vscode-solidity-server (solc + solhint), forge fmt, forge-aware
+;; indentation and forge build/test commands. Everything lives in +solidity.el.
+(load! "+solidity")
 
 ;; Docker : let hadolint own these best-practice diagnostics
 (after! lsp-dockerfile
@@ -257,8 +257,6 @@
         '("ruff" "check" "-n" "--fix" "--fix-only" "--stdin-filename" filepath "-"))
   (setf (alist-get 'alejandra apheleia-formatters)
         '("alejandra" "--quiet" "-"))
-  (setf (alist-get 'forge-fmt apheleia-formatters)
-        '("forge" "fmt" "--raw" "-"))
   (setf (alist-get 'php-cs-fixer apheleia-formatters)    ; no stdin -> use apheleia `inplace'
         '("php-cs-fixer" "fix" "--using-cache=no" "--quiet" inplace))
   ;; gersemi: 2-space indent unless the project ships a .gersemirc.
@@ -297,11 +295,11 @@
                    (php-ts-mode        . php-cs-fixer)
                    (cmake-mode         . gersemi)
                    (cmake-ts-mode      . gersemi)
-                   (solidity-mode      . forge-fmt)
                    (bash-ts-mode       . shfmt)))
     (setf (alist-get (car entry) apheleia-mode-alist) (cdr entry))))
 ;; Note: lua->stylua, rust->rustfmt, zig->zig-fmt, sh->shfmt and web-mode->prettier
 ;; (for .astro) are already apheleia/Doom defaults, so they need no entry here.
+;; solidity->forge-fmt is set in +solidity.el (it must run after :lang solidity).
 
 ;;; SPELLCHECK (spell-fu + aspell, English and Spanish at the same time)
 ;; A word is accepted if it appears in either dictionary.
