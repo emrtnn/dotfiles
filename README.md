@@ -49,11 +49,11 @@
 
 **Firmware (BIOS)**
 
-| Setting | Value | Why |
-| --- | --- | --- |
-| CSM / Launch CSM / Legacy boot | **Disabled** | With CSM on, the USB can boot in legacy mode; then UEFI entries can't be created and Secure Boot is impossible. |
-| Secure Boot | **Disabled** for now | The Arch ISO isn't signed. Enabled in section 17. |
-| Fast Boot | Disabled (not "Ultra Fast") | Ultra Fast skips USB init: dead keyboard in Limine and in the BIOS. |
+| Setting                        | Value                       | Why                                                                                                             |
+| ------------------------------ | --------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| CSM / Launch CSM / Legacy boot | **Disabled**                | With CSM on, the USB can boot in legacy mode; then UEFI entries can't be created and Secure Boot is impossible. |
+| Secure Boot                    | **Disabled** for now        | The Arch ISO isn't signed. Enabled in section 17.                                                               |
+| Fast Boot                      | Disabled (not "Ultra Fast") | Ultra Fast skips USB init: dead keyboard in Limine and in the BIOS.                                             |
 
 Gigabyte hides the Secure Boot menu until CSM is off. On AMI Aptio boards CSM
 is under **Boot** (or **Advanced → CSM Configuration**).
@@ -197,13 +197,13 @@ Check the `list` output letter by letter: a typo (`@snaqpshots`) only shows
 up later as "No such file or directory" when mounting. To rename one: `mv` it
 while the top level is mounted.
 
-| Subvolume | Mounted at | Why separate |
-| --- | --- | --- |
-| `@` | `/` | the system; what you snapshot and roll back |
-| `@home` | `/home` | a rollback of `/` never touches your files |
-| `@log` | `/var/log` | logs survive rollbacks, so you can see what broke |
-| `@pkg` | `/var/cache/pacman/pkg` | the package cache stays out of snapshots |
-| `@snapshots` | `/.snapshots` | snapshots live outside `@`, so rolling `@` back keeps them |
+| Subvolume    | Mounted at              | Why separate                                               |
+| ------------ | ----------------------- | ---------------------------------------------------------- |
+| `@`          | `/`                     | the system; what you snapshot and roll back                |
+| `@home`      | `/home`                 | a rollback of `/` never touches your files                 |
+| `@log`       | `/var/log`              | logs survive rollbacks, so you can see what broke          |
+| `@pkg`       | `/var/cache/pacman/pkg` | the package cache stays out of snapshots                   |
+| `@snapshots` | `/.snapshots`           | snapshots live outside `@`, so rolling `@` back keeps them |
 
 ```
 O=noatime,compress=zstd:1
@@ -437,7 +437,7 @@ pacman -S linux-cachyos-nvidia-open nvidia-utils lib32-nvidia-utils
 - `linux-cachyos-nvidia-open`: the open NVIDIA module prebuilt for exactly
   this kernel. No DKMS, no compile on kernel updates. `nvidia-utils` also
   blacklists nouveau.
-- *If amd instead of nvidia gpu` nothing extra. `amdgpu` is part of the kernel.
+- *If amd instead of nvidia gpu`nothing extra.`amdgpu` is part of the kernel.
 - `limine-mkinitcpio-hook`: CachyOS's tool that writes `/boot/limine.conf`
   entries whenever a kernel or initramfs changes; provides `limine-install`,
   `limine-mkinitcpio`, `limine-update`.
@@ -694,39 +694,39 @@ the repos.
 <details>
 <summary>What each group is for</summary>
 
-| Packages | For |
-| --- | --- |
-| base-devel, stow, git | building AUR packages, these dotfiles |
-| plocate, pacman-contrib | `locate`, `paccache.timer` |
-| bind, github-cli, 7zip, tree | `dig`/`nslookup`, `gh`, `7z`, fzf's Alt+C preview |
-| eza, fzf, zoxide, carapace-bin | `ls` aliases, fuzzy finder, `cd`, completions |
-| zsh-autosuggestions, -syntax-highlighting, -history-substring-search | zsh plugins (from `/usr/share/zsh/plugins`) |
-| yazi + poppler, resvg, chafa, imagemagick, ffmpeg | file manager and its previews |
-| bat, tuicr, jujutsu, tmux | pager, code review TUI (`gd` alias), jj, multiplexer |
-| neovim, tree-sitter-cli, curl, tar, gzip, unzip | Neovim; lazy.nvim/mason downloads; parser builds |
-| clang, cppcheck | clangd, clang-format, clang-tidy; C/C++ lint |
-| rustup, zig, php, nodejs, npm, pnpm, python, uv | toolchains; runtimes for mason's tools |
-| nixd, foundry-bin | Nix LSP (not in mason); `forge fmt` (extra's `foundry` is unrelated) |
-| emacs-wayland, libvterm, libtool, cmake, nerd symbols, all-the-icons | Doom Emacs, vterm, icons |
-| pi-coding-agent-bin | pi coding agent |
-| mangowm, xorg-xwayland, noctalia, ghostty | compositor, shell (bar, launcher, lock…), terminal |
-| satty, grim, slurp, hyprpicker, brightnessctl, wl-clipboard, wtype, cliphist, gpu-screen-recorder | screenshots, picker, brightness, clipboard, key injection, recorder |
-| qt5/qt6-wayland, xdg-desktop-portal(-wlr, -gtk) | Qt on Wayland; portals (screencast via wlr) |
-| sddm, kwin, sddm-silent-theme, qt6-svg, qt6-virtualkeyboard, qt6-multimedia-ffmpeg, accountsservice | login screen; the theme crashes without the Qt modules |
-| pipewire (+ alsa, pulse, jack), wireplumber | audio |
-| dconf, gvfs, mesa, vulkan-icd-loader, xdg-utils, polkit, gsettings-desktop-schemas | desktop plumbing |
-| adw-gtk-theme, nwg-look, papirus-icon-theme, bibata-cursor-theme-bin, qt6ct, breeze | GTK/Qt theming, icons, cursor |
-| noto-fonts(-cjk, -emoji), nerd fonts, material symbols, twemoji | fonts (Iosevka Term: Ghostty; Iosevka Nerd: Doom; GeistMono: Noctalia) |
-| librewolf, helium-browser-bin, torbrowser-launcher | browsers |
-| telegram-desktop, signal-desktop, vesktop-bin | chat |
-| evince, onlyoffice-bin, mpv, mpv-modernz, playerctl | PDF, office, video + OSC, media keys |
-| dolphin, ark, kio-fuse, ffmpegthumbs, kdegraphics-thumbnailers, kconfig, archlinux-xdg-menu, gwenview, kimageformats | file manager, archives, thumbnails, `kwriteconfig6`, "Open With", images |
-| keepassxc, syncthing, gnome-keyring, gcr-4, libsecret, sequoia-sq | passwords, sync, keyring/SSH agent/`secret-tool`, OpenPGP |
-| localsend-bin | LAN file sharing |
-| tor, torsocks, proxychains-ng, openvpn, wireshark-qt, docker, nftables, iptables, tailscale | network and security |
-| zram-generator, snapper, snap-pac, cachyos-settings, sbctl | compressed swap, snapshots, CachyOS tweaks, Secure Boot |
-| qemu-desktop, libvirt, virt-manager, virt-viewer, dnsmasq, swtpm, virtiofsd, edk2-ovmf, spice-gtk, guestfs-tools, virtio-win, quickemu | VMs |
-| nmap … binwalk, burpsuite … hashid, seclists, rockyou, wfuzz | pentesting tools and wordlists (`/usr/share/seclists`, `/usr/share/dict/rockyou.txt`) |
+| Packages                                                                                                                               | For                                                                                   |
+| -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| base-devel, stow, git                                                                                                                  | building AUR packages, these dotfiles                                                 |
+| plocate, pacman-contrib                                                                                                                | `locate`, `paccache.timer`                                                            |
+| bind, github-cli, 7zip, tree                                                                                                           | `dig`/`nslookup`, `gh`, `7z`, fzf's Alt+C preview                                     |
+| eza, fzf, zoxide, carapace-bin                                                                                                         | `ls` aliases, fuzzy finder, `cd`, completions                                         |
+| zsh-autosuggestions, -syntax-highlighting, -history-substring-search                                                                   | zsh plugins (from `/usr/share/zsh/plugins`)                                           |
+| yazi + poppler, resvg, chafa, imagemagick, ffmpeg                                                                                      | file manager and its previews                                                         |
+| bat, tuicr, jujutsu, tmux                                                                                                              | pager, code review TUI (`gd` alias), jj, multiplexer                                  |
+| neovim, tree-sitter-cli, curl, tar, gzip, unzip                                                                                        | Neovim; lazy.nvim/mason downloads; parser builds                                      |
+| clang, cppcheck                                                                                                                        | clangd, clang-format, clang-tidy; C/C++ lint                                          |
+| rustup, zig, php, nodejs, npm, pnpm, python, uv                                                                                        | toolchains; runtimes for mason's tools                                                |
+| nixd, foundry-bin                                                                                                                      | Nix LSP (not in mason); `forge fmt` (extra's `foundry` is unrelated)                  |
+| emacs-wayland, libvterm, libtool, cmake, nerd symbols, all-the-icons                                                                   | Doom Emacs, vterm, icons                                                              |
+| pi-coding-agent-bin                                                                                                                    | pi coding agent                                                                       |
+| mangowm, xorg-xwayland, noctalia, ghostty                                                                                              | compositor, shell (bar, launcher, lock…), terminal                                    |
+| satty, grim, slurp, hyprpicker, brightnessctl, wl-clipboard, wtype, cliphist, gpu-screen-recorder                                      | screenshots, picker, brightness, clipboard, key injection, recorder                   |
+| qt5/qt6-wayland, xdg-desktop-portal(-wlr, -gtk)                                                                                        | Qt on Wayland; portals (screencast via wlr)                                           |
+| sddm, kwin, sddm-silent-theme, qt6-svg, qt6-virtualkeyboard, qt6-multimedia-ffmpeg, accountsservice                                    | login screen; the theme crashes without the Qt modules                                |
+| pipewire (+ alsa, pulse, jack), wireplumber                                                                                            | audio                                                                                 |
+| dconf, gvfs, mesa, vulkan-icd-loader, xdg-utils, polkit, gsettings-desktop-schemas                                                     | desktop plumbing                                                                      |
+| adw-gtk-theme, nwg-look, papirus-icon-theme, bibata-cursor-theme-bin, qt6ct, breeze                                                    | GTK/Qt theming, icons, cursor                                                         |
+| noto-fonts(-cjk, -emoji), nerd fonts, material symbols, twemoji                                                                        | fonts (Iosevka Term: Ghostty; Iosevka Nerd: Doom; GeistMono: Noctalia)                |
+| librewolf, helium-browser-bin, torbrowser-launcher                                                                                     | browsers                                                                              |
+| telegram-desktop, signal-desktop, vesktop-bin                                                                                          | chat                                                                                  |
+| evince, onlyoffice-bin, mpv, mpv-modernz, playerctl                                                                                    | PDF, office, video + OSC, media keys                                                  |
+| dolphin, ark, kio-fuse, ffmpegthumbs, kdegraphics-thumbnailers, kconfig, archlinux-xdg-menu, gwenview, kimageformats                   | file manager, archives, thumbnails, `kwriteconfig6`, "Open With", images              |
+| keepassxc, syncthing, gnome-keyring, gcr-4, libsecret, sequoia-sq                                                                      | passwords, sync, keyring/SSH agent/`secret-tool`, OpenPGP                             |
+| localsend-bin                                                                                                                          | LAN file sharing                                                                      |
+| tor, torsocks, proxychains-ng, openvpn, wireshark-qt, docker, nftables, iptables, tailscale                                            | network and security                                                                  |
+| zram-generator, snapper, snap-pac, cachyos-settings, sbctl                                                                             | compressed swap, snapshots, CachyOS tweaks, Secure Boot                               |
+| qemu-desktop, libvirt, virt-manager, virt-viewer, dnsmasq, swtpm, virtiofsd, edk2-ovmf, spice-gtk, guestfs-tools, virtio-win, quickemu | VMs                                                                                   |
+| nmap … binwalk, burpsuite … hashid, seclists, rockyou, wfuzz                                                                           | pentesting tools and wordlists (`/usr/share/seclists`, `/usr/share/dict/rockyou.txt`) |
 
 </details>
 
@@ -1111,8 +1111,8 @@ softrealtime=auto
 inhibit_screensaver=1
 
 [custom]
-start=notify-send 'GameMode started'
-end=notify-send 'GameMode ended'
+start=notify-send -a 'Heroic Games Launcher' 'GameMode started' -e
+end=notify-send -a 'Heroic Games Launcher' 'GameMode ended' -e
 EOF
 
 sudo tee /etc/udev/rules.d/99-ntsync.rules >/dev/null <<'EOF'
@@ -1281,16 +1281,21 @@ pi reads them itself when needed. `~/.config/pi/web-search.json`:
 
 ```json
 {
-  "provider": "exa",
-  "exaApiKey": "!secret-tool lookup env EXA_API_KEY",
-  "braveApiKey": "!secret-tool lookup env BRAVE_API_KEY"
+	"provider": "exa",
+	"exaApiKey": "!secret-tool lookup env EXA_API_KEY",
+	"braveApiKey": "!secret-tool lookup env BRAVE_API_KEY"
 }
 ```
 
 `~/.pi/agent/auth.json`, only for an Anthropic API key:
 
 ```json
-{ "anthropic": { "type": "api_key", "key": "!secret-tool lookup env ANTHROPIC_API_KEY" } }
+{
+	"anthropic": {
+		"type": "api_key",
+		"key": "!secret-tool lookup env ANTHROPIC_API_KEY"
+	}
+}
 ```
 
 Not stowed (and in `.gitignore`): pi writes to them. For other tools, give the
@@ -1395,12 +1400,12 @@ hand (`sbctl sign`, `sbctl-batch-sign`).
 
 ### 17.1 Firmware: clear the keys
 
-| | Gigabyte | AMI Aptio |
-| --- | --- | --- |
-| Where | BIOS tab → Secure Boot (appears with CSM off) | Security → Secure Boot |
-| Mode | Secure Boot Mode → **Custom** | same |
+|       | Gigabyte                                                                    | AMI Aptio                                     |
+| ----- | --------------------------------------------------------------------------- | --------------------------------------------- |
+| Where | BIOS tab → Secure Boot (appears with CSM off)                               | Security → Secure Boot                        |
+| Mode  | Secure Boot Mode → **Custom**                                               | same                                          |
 | Clear | Key Management → **Reset To Setup Mode** / Delete All Secure Boot Variables | same; answer **No** to restoring factory keys |
-| Also | Factory Key Provision → **Disabled** | same, if shown |
+| Also  | Factory Key Provision → **Disabled**                                        | same, if shown                                |
 
 Leave Secure Boot **Disabled**. The screen must show **System Mode: Setup**
 and the key stores (PK, KEK, db, dbx) with 0 keys. Save and exit.
@@ -1478,25 +1483,25 @@ mount -a
 `mount -a` inside the chroot mounts `/boot` and the other subvolumes from
 fstab. Leave with `exit`, `umount -R /mnt`.
 
-| Symptom | Cause | Fix |
-| --- | --- | --- |
-| `limine-install`: "The system is not using UEFI" | USB booted in legacy (CSM) mode | CSM off, boot "UEFI: <USB>", re-enter from the USB, rerun 10.4 |
-| `nvme0n1p2 does not exist`, partitions "moved" to the other disk | NVMe names swap between boots | use labels/serials; the boot config uses UUIDs and is unaffected |
-| Boot hangs on "A start job is running for /dev/mapper/cryptroot", no passphrase prompt | `rd.luks.name` empty or misspelled, or no `sd-encrypt` (empty `mkinitcpio.conf.d`) | check `grep cmdline /boot/limine.conf` and `cat /etc/mkinitcpio.conf.d/*.conf`, fix, `limine-mkinitcpio` |
-| Same, but a prompt was there | prompt shown on a screen that lost sync | power-cycle the monitor, type the passphrase |
-| "Cannot open access to console, the root account is locked" | no root password | set one from the USB chroot (`passwd`) |
-| Black screen with a cursor after unlocking; Ctrl+Alt+F2 may still work | SDDM greeter crashes | `journalctl -b _UID=$(id -u sddm)` and `journalctl -b \| grep -iE 'kwin\|greeter'`; known causes: `--locale1` (KWin 6.8), missing `qt6-multimedia-ffmpeg`/`qt6-virtualkeyboard`/`qt6-svg`. Meanwhile `sudo systemctl disable sddm` and start `mango` from tty1 |
-| "WARNING: Blake2b hash for … vmlinuz does not match" | sbctl re-signed the ESP kernel after hashing | 17.2: `sbctl remove-file` the kernel, `limine-mkinitcpio` |
-| `unknown key '%INSTALLED_DB%' in local database` | Arch's pacman replaced CachyOS's | CachyOS repos above `[core]`, reinstall `pacman` from CachyOS |
-| `paru: … libalpm.so.15: cannot open shared object file` | AUR `paru-bin` built for Arch's pacman | `pacman -Rns paru-bin && pacman -S paru` |
-| `perl: warning: Setting locale failed` | `es_ES.UTF-8` not generated | uncomment it in `/etc/locale.gen`, `sudo locale-gen` |
-| `Bad configuration option: permitrootlogin` on `git clone`/`ssh` | hardening file in `ssh_config.d` | move it to `sshd_config.d` (14.6) |
-| `systemctl --user`: "Failed to connect to user scope bus" | shell from `su`/`sudo -u` | log in directly as the user |
-| `mkdir: Permission denied` in your home | something created as root | `sudo chown -R emrtnn:users /home/emrtnn` |
-| `mount -a`: "wrong fs type" on `/data` | fstab points at the raw LUKS partition | use `/dev/mapper/cryptdata` (or the inner filesystem UUID) |
-| Mount fails with "No such file or directory" for a subvolume | typo when creating it | `btrfs subvolume list`, `mv` to rename from the top level (`subvolid=5`) |
-| `resolvectl` still lists ISP DNS servers | DHCP DNS on the connection | `nmcli connection modify … ipv4.ignore-auto-dns yes ipv6.ignore-auto-dns yes` |
-| mkinitcpio: `Possibly missing firmware for module: 'qat_6xxx'` | Intel QuickAssist driver pulled in by autodetect | harmless |
+| Symptom                                                                                | Cause                                                                              | Fix                                                                                                                                                                                                                                                            |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `limine-install`: "The system is not using UEFI"                                       | USB booted in legacy (CSM) mode                                                    | CSM off, boot "UEFI: <USB>", re-enter from the USB, rerun 10.4                                                                                                                                                                                                 |
+| `nvme0n1p2 does not exist`, partitions "moved" to the other disk                       | NVMe names swap between boots                                                      | use labels/serials; the boot config uses UUIDs and is unaffected                                                                                                                                                                                               |
+| Boot hangs on "A start job is running for /dev/mapper/cryptroot", no passphrase prompt | `rd.luks.name` empty or misspelled, or no `sd-encrypt` (empty `mkinitcpio.conf.d`) | check `grep cmdline /boot/limine.conf` and `cat /etc/mkinitcpio.conf.d/*.conf`, fix, `limine-mkinitcpio`                                                                                                                                                       |
+| Same, but a prompt was there                                                           | prompt shown on a screen that lost sync                                            | power-cycle the monitor, type the passphrase                                                                                                                                                                                                                   |
+| "Cannot open access to console, the root account is locked"                            | no root password                                                                   | set one from the USB chroot (`passwd`)                                                                                                                                                                                                                         |
+| Black screen with a cursor after unlocking; Ctrl+Alt+F2 may still work                 | SDDM greeter crashes                                                               | `journalctl -b _UID=$(id -u sddm)` and `journalctl -b \| grep -iE 'kwin\|greeter'`; known causes: `--locale1` (KWin 6.8), missing `qt6-multimedia-ffmpeg`/`qt6-virtualkeyboard`/`qt6-svg`. Meanwhile `sudo systemctl disable sddm` and start `mango` from tty1 |
+| "WARNING: Blake2b hash for … vmlinuz does not match"                                   | sbctl re-signed the ESP kernel after hashing                                       | 17.2: `sbctl remove-file` the kernel, `limine-mkinitcpio`                                                                                                                                                                                                      |
+| `unknown key '%INSTALLED_DB%' in local database`                                       | Arch's pacman replaced CachyOS's                                                   | CachyOS repos above `[core]`, reinstall `pacman` from CachyOS                                                                                                                                                                                                  |
+| `paru: … libalpm.so.15: cannot open shared object file`                                | AUR `paru-bin` built for Arch's pacman                                             | `pacman -Rns paru-bin && pacman -S paru`                                                                                                                                                                                                                       |
+| `perl: warning: Setting locale failed`                                                 | `es_ES.UTF-8` not generated                                                        | uncomment it in `/etc/locale.gen`, `sudo locale-gen`                                                                                                                                                                                                           |
+| `Bad configuration option: permitrootlogin` on `git clone`/`ssh`                       | hardening file in `ssh_config.d`                                                   | move it to `sshd_config.d` (14.6)                                                                                                                                                                                                                              |
+| `systemctl --user`: "Failed to connect to user scope bus"                              | shell from `su`/`sudo -u`                                                          | log in directly as the user                                                                                                                                                                                                                                    |
+| `mkdir: Permission denied` in your home                                                | something created as root                                                          | `sudo chown -R emrtnn:users /home/emrtnn`                                                                                                                                                                                                                      |
+| `mount -a`: "wrong fs type" on `/data`                                                 | fstab points at the raw LUKS partition                                             | use `/dev/mapper/cryptdata` (or the inner filesystem UUID)                                                                                                                                                                                                     |
+| Mount fails with "No such file or directory" for a subvolume                           | typo when creating it                                                              | `btrfs subvolume list`, `mv` to rename from the top level (`subvolid=5`)                                                                                                                                                                                       |
+| `resolvectl` still lists ISP DNS servers                                               | DHCP DNS on the connection                                                         | `nmcli connection modify … ipv4.ignore-auto-dns yes ipv6.ignore-auto-dns yes`                                                                                                                                                                                  |
+| mkinitcpio: `Possibly missing firmware for module: 'qat_6xxx'`                         | Intel QuickAssist driver pulled in by autodetect                                   | harmless                                                                                                                                                                                                                                                       |
 
 ---
 
@@ -1509,41 +1514,41 @@ Every top-level directory is a stow package mirroring `$HOME`
 (copied into the browser profile by hand). Also: `.luarc.json` (Lua LSP
 globals), `.stowrc` (target `~`), `.gitignore` (blocks keys and secrets).
 
-| Package | Puts in `$HOME` | What |
-| --- | --- | --- |
-| `zsh` | `~/.zshenv`, `~/.config/zsh/{.zshenv,.zshrc}` | environment, zsh with eza/fzf/zoxide/carapace/yazi, vi mode, history, aliases |
-| `git` | `~/.config/git/{config,allowed_signers}` | identity, SSH signing, defaults, aliases |
-| `jj` | `~/.config/jj/config.toml` | Jujutsu: same identity and key, ediff merge tool |
-| `tmux` | `~/.config/tmux/tmux.conf` | `C-a` prefix, vi mode, Caelus bar, smart-splits, resurrect + continuum |
-| `nvim` *(folded)* | `~/.config/nvim` | lazy.nvim; `lua/plugins/mason.lua` installs LSPs/formatters/linters |
-| `doom` *(folded)* | `~/.config/doom` | Doom Emacs config and Caelus theme |
-| `mango` *(folded)* | `~/.config/mango` | compositor config |
-| `yazi` | `~/.config/yazi/…` | file manager, Caelus, full-border plugin |
-| `bat` | `~/.config/bat/{config,themes/caelus.tmTheme}` | pager theme |
-| `tuicr` | `~/.config/tuicr/…` | code review TUI, Caelus |
-| `face` | `~/.face.png` | account picture |
-| `wallpapers` | `~/Pictures/Wallpapers` | wallpapers (Noctalia reads this folder) |
-| `gtk` | `~/.config/gtk-{3,4}.0/…`, `~/.gtkrc-2.0` | adw-gtk3 dark, Papirus, Bibata |
-| `cursor` | `~/.icons/default/index.theme`, `~/.local/share/icons/default/index.theme`, `~/.Xresources` | cursor for X/XWayland apps |
-| `qt` | `~/.config/qt6ct/…` | Breeze style, Caelus palette, Papirus |
-| `dolphin` | `~/.local/share/color-schemes/Caelus.colors`, `…/servicemenus/open-in-yazi.desktop` | KDE colors, "Open in Yazi" |
-| `mimeapps` | `~/.config/mimeapps.list` (+ legacy copy) | defaults: LibreWolf, Dolphin, Gwenview, OnlyOffice |
-| `emacs` | `~/.config/systemd/user/emacs.service`, `~/.local/bin/emacs-ediff` | Emacs daemon with the session; jj merge tool |
-| `mpv` | `~/.config/mpv/mpv.conf` | ModernZ OSC |
-| `xdg-desktop-portal` | `mango-portals.conf`, `xdg-desktop-portal-wlr/config` | wlr for screencast/screenshots, gtk for the rest |
-| `cliphist` | `cliphist.service`, `cliphist-images.service` | clipboard history for Noctalia |
-| `ghostty` | `~/.config/ghostty/{config.ghostty,themes/caelus}` | terminal |
-| `noctalia` | `~/.config/noctalia/{config.toml,palettes/Caelus.json}` | bar, launcher, notifications, lock, palette |
-| `satty` | `~/.config/satty/config.toml` | screenshot annotation |
+| Package              | Puts in `$HOME`                                                                             | What                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `zsh`                | `~/.zshenv`, `~/.config/zsh/{.zshenv,.zshrc}`                                               | environment, zsh with eza/fzf/zoxide/carapace/yazi, vi mode, history, aliases |
+| `git`                | `~/.config/git/{config,allowed_signers}`                                                    | identity, SSH signing, defaults, aliases                                      |
+| `jj`                 | `~/.config/jj/config.toml`                                                                  | Jujutsu: same identity and key, ediff merge tool                              |
+| `tmux`               | `~/.config/tmux/tmux.conf`                                                                  | `C-a` prefix, vi mode, Caelus bar, smart-splits, resurrect + continuum        |
+| `nvim` _(folded)_    | `~/.config/nvim`                                                                            | lazy.nvim; `lua/plugins/mason.lua` installs LSPs/formatters/linters           |
+| `doom` _(folded)_    | `~/.config/doom`                                                                            | Doom Emacs config and Caelus theme                                            |
+| `mango` _(folded)_   | `~/.config/mango`                                                                           | compositor config                                                             |
+| `yazi`               | `~/.config/yazi/…`                                                                          | file manager, Caelus, full-border plugin                                      |
+| `bat`                | `~/.config/bat/{config,themes/caelus.tmTheme}`                                              | pager theme                                                                   |
+| `tuicr`              | `~/.config/tuicr/…`                                                                         | code review TUI, Caelus                                                       |
+| `face`               | `~/.face.png`                                                                               | account picture                                                               |
+| `wallpapers`         | `~/Pictures/Wallpapers`                                                                     | wallpapers (Noctalia reads this folder)                                       |
+| `gtk`                | `~/.config/gtk-{3,4}.0/…`, `~/.gtkrc-2.0`                                                   | adw-gtk3 dark, Papirus, Bibata                                                |
+| `cursor`             | `~/.icons/default/index.theme`, `~/.local/share/icons/default/index.theme`, `~/.Xresources` | cursor for X/XWayland apps                                                    |
+| `qt`                 | `~/.config/qt6ct/…`                                                                         | Breeze style, Caelus palette, Papirus                                         |
+| `dolphin`            | `~/.local/share/color-schemes/Caelus.colors`, `…/servicemenus/open-in-yazi.desktop`         | KDE colors, "Open in Yazi"                                                    |
+| `mimeapps`           | `~/.config/mimeapps.list` (+ legacy copy)                                                   | defaults: LibreWolf, Dolphin, Gwenview, OnlyOffice                            |
+| `emacs`              | `~/.config/systemd/user/emacs.service`, `~/.local/bin/emacs-ediff`                          | Emacs daemon with the session; jj merge tool                                  |
+| `mpv`                | `~/.config/mpv/mpv.conf`                                                                    | ModernZ OSC                                                                   |
+| `xdg-desktop-portal` | `mango-portals.conf`, `xdg-desktop-portal-wlr/config`                                       | wlr for screencast/screenshots, gtk for the rest                              |
+| `cliphist`           | `cliphist.service`, `cliphist-images.service`                                               | clipboard history for Noctalia                                                |
+| `ghostty`            | `~/.config/ghostty/{config.ghostty,themes/caelus}`                                          | terminal                                                                      |
+| `noctalia`           | `~/.config/noctalia/{config.toml,palettes/Caelus.json}`                                     | bar, launcher, notifications, lock, palette                                   |
+| `satty`              | `~/.config/satty/config.toml`                                                               | screenshot annotation                                                         |
 
 ### 19.2 Environment variables
 
-| File | Read by | Holds |
-| --- | --- | --- |
-| `~/.config/zsh/.zshenv` | every zsh | PATH, EDITOR/VISUAL, XDG dirs, `SSH_AUTH_SOCK`, `TMUX_TMPDIR`, npm prefix, `CHROME_PATH` |
-| `~/.config/zsh/.zshrc` | interactive zsh | fzf options, aliases |
+| File                              | Read by                | Holds                                                                                    |
+| --------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------- |
+| `~/.config/zsh/.zshenv`           | every zsh              | PATH, EDITOR/VISUAL, XDG dirs, `SSH_AUTH_SOCK`, `TMUX_TMPDIR`, npm prefix, `CHROME_PATH` |
+| `~/.config/zsh/.zshrc`            | interactive zsh        | fzf options, aliases                                                                     |
 | `~/.config/mango/config/env.conf` | Mango and its children | toolkit backends, Qt theme, `XDG_MENU_PREFIX`, Java fix, `BROWSER` (cursor: `misc.conf`) |
-| `/etc/environment` | every login | GPU variables (NVIDIA on monad, ROCm) |
+| `/etc/environment`                | every login            | GPU variables (NVIDIA on monad, ROCm)                                                    |
 
 SDDM starts Mango from a non-interactive login zsh, so Mango inherits
 `.zshenv` (not `.zshrc`, so nothing session-wide goes there) and adds
@@ -1557,28 +1562,28 @@ After changing `.zshenv` or `env.conf`, log out and back in.
 Hand-copied into files that can't import anything (Neovim, Doom, LibreWolf
 CSS, Mango, tmux, Ghostty, Noctalia…); keep them in sync with this table.
 
-| Role | Name | Hex |
-| --- | --- | --- |
-| background | bg | `#0f0f0f` |
-| sunken: status/tab bars | gray0 | `#141514` |
-| raised: popups, inputs, cursor line | gray1 | `#1e1f1e` |
-| hover, selected rows | gray2 | `#272a28` |
-| selection, borders | gray3 | `#3b403c` |
-| inactive borders, line numbers | gray4 | `#585f5b` |
-| disabled text | gray5 | `#6c756f` |
-| comments, muted text | gray6 | `#888e7b` |
-| secondary text | gray7 | `#9a9c8b` |
-| operators, punctuation | gray8 | `#b6b69a` |
-| dimmed foreground | gray9 | `#d9cdb5` |
-| foreground | fg | `#f4decd` |
-| THE accent: focus, selection, keywords | orange / orangeLight | `#ef934d` / `#f4b585` |
-| functions, warnings | yellow | `#efbf71` |
-| errors, deletions, urgent | red / redLight | `#f16e65` / `#ef968f` |
-| strings, additions | green / greenLight | `#72ca68` / `#98d694` |
-| types, hints | cyan / cyanLight | `#7ec9a3` / `#abd4bf` |
-| modules, info, links / fields | blue / blueLight | `#71b4d6` / `#b0d4e8` |
-| numbers, constants | magenta / magentaLight | `#e28dc6` / `#ebadd6` |
-| diff/message tints (15% over bg) | greenTint, redTint, blueTint, orangeTint | `#1e2b1c`, `#311d1c`, `#1e282d`, `#312318` |
+| Role                                   | Name                                     | Hex                                        |
+| -------------------------------------- | ---------------------------------------- | ------------------------------------------ |
+| background                             | bg                                       | `#0f0f0f`                                  |
+| sunken: status/tab bars                | gray0                                    | `#141514`                                  |
+| raised: popups, inputs, cursor line    | gray1                                    | `#1e1f1e`                                  |
+| hover, selected rows                   | gray2                                    | `#272a28`                                  |
+| selection, borders                     | gray3                                    | `#3b403c`                                  |
+| inactive borders, line numbers         | gray4                                    | `#585f5b`                                  |
+| disabled text                          | gray5                                    | `#6c756f`                                  |
+| comments, muted text                   | gray6                                    | `#888e7b`                                  |
+| secondary text                         | gray7                                    | `#9a9c8b`                                  |
+| operators, punctuation                 | gray8                                    | `#b6b69a`                                  |
+| dimmed foreground                      | gray9                                    | `#d9cdb5`                                  |
+| foreground                             | fg                                       | `#f4decd`                                  |
+| THE accent: focus, selection, keywords | orange / orangeLight                     | `#ef934d` / `#f4b585`                      |
+| functions, warnings                    | yellow                                   | `#efbf71`                                  |
+| errors, deletions, urgent              | red / redLight                           | `#f16e65` / `#ef968f`                      |
+| strings, additions                     | green / greenLight                       | `#72ca68` / `#98d694`                      |
+| types, hints                           | cyan / cyanLight                         | `#7ec9a3` / `#abd4bf`                      |
+| modules, info, links / fields          | blue / blueLight                         | `#71b4d6` / `#b0d4e8`                      |
+| numbers, constants                     | magenta / magentaLight                   | `#e28dc6` / `#ebadd6`                      |
+| diff/message tints (15% over bg)       | greenTint, redTint, blueTint, orangeTint | `#1e2b1c`, `#311d1c`, `#1e282d`, `#312318` |
 
 Terminal ANSI order (black red green yellow blue magenta cyan white): normal
 `bg red green orange blue magenta cyan gray9`, bright
