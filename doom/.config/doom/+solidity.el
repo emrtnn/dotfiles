@@ -1,22 +1,14 @@
-;;; +solidity.el --- Solidity / Foundry development -*- lexical-binding: t; -*-
+;;; +solidity.el --- Solidity with Foundry -*- lexical-binding: t; -*-
 ;;
-;; Builds on Doom's `:lang solidity' (solidity-mode; flycheck-only checkers; a
-;; prettier formatter) and brings it in line with the nvim setup.  Loaded from
-;; config.el via `load!'.
+;; On top of Doom's `:lang solidity' (solidity-mode plus a prettier formatter):
 ;;
-;;   LSP        vscode-solidity-server (mason), the same server as nvim's
-;;              `solidity_ls'.  It bundles solc-js AND solhint, so compiler and
-;;              solhint diagnostics both arrive through lsp -> flymake (solhint
-;;              reads the project's .solhint.json).
-;;   Format     forge fmt on save, using the project's foundry.toml [fmt].
-;;   Indent     whatever `forge fmt' will write (fmt.tab_width / fmt.style), so
-;;              typing and saving agree.
-;;   Commands   forge build / test on the localleader (SPC m), with clickable
-;;              compiler errors.
+;;   LSP       vscode-solidity-server through eglot. It bundles solc-js and
+;;             solhint, so compiler and lint diagnostics both come from it.
+;;   Format    forge fmt on save, using the project's foundry.toml [fmt].
+;;   Commands  forge build / test on the localleader (SPC m).
 ;;
-;; Per-project values come from `forge config --json' (~10ms).  It resolves
-;; foundry.toml, profiles, ~/.foundry/foundry.toml and Foundry's defaults, so
-;; nothing here has to parse TOML.
+;; Per-project values come from `forge config --json', which resolves
+;; foundry.toml, profiles and Foundry's defaults.
 
 ;;; Foundry project helpers
 
@@ -37,27 +29,11 @@ Nil when DIR is not inside a Foundry project or forge is unavailable."
             (json-parse-buffer :object-type 'alist
                                :null-object nil :false-object nil)))))))
 
-;;; Indentation
-;; Indent the way `forge fmt' will rewrite the buffer on save: the project's
-;; fmt.tab_width/style, else 4 spaces (Foundry's default and the Solidity style
-;; guide).  Don't use the global 2 here, because forge would undo it on every
-;; save.
-(defun +solidity-indent-like-forge-h ()
-  "Set indentation for this buffer to match `forge fmt'."
-  (let-alist (alist-get 'fmt (+solidity-forge-config))
-    (let ((width (or .tab_width 4)))
-      (setq-local c-basic-offset width
-                  tab-width width
-                  evil-shift-width width
-                  indent-tabs-mode (equal .style "tab")
-                  fill-column (or .line_length 120)))))
+;;; Editing
+;; solidity-mode derives from c-mode, which gets two things wrong for it.
 
-(add-hook 'solidity-mode-hook #'+solidity-indent-like-forge-h)
-
-;; cc-mode parses `struct S { ... }' / `enum E { ... }' as C, where a `;' must
-;; follow the brace.  So it takes the next line for a continuation
-;; (`statement-cont') and indents it one extra level.  Solidity has no such
-;; `;', so after a closing brace there is nothing to continue.
+;; cc-mode expects a `;' after `struct S { ... }' and `enum E { ... }', so it
+;; indents the line after the closing brace as a continuation.
 (defun +solidity-lineup-after-brace (_langelem)
   "Return 0 if the previous code line ends with `}', else nil."
   (save-excursion
@@ -66,45 +42,28 @@ Nil when DIR is not inside a Foundry project or forge is unavailable."
     (when (eq (char-before) ?\}) 0)))
 
 (add-hook! 'solidity-mode-hook
-  (defun +solidity-fix-offsets-h ()
+  (defun +solidity-fix-c-mode-h ()
     (c-set-offset 'statement-cont
                   (list #'+solidity-lineup-after-brace
-                        (alist-get 'statement-cont c-offsets-alist)))))
-
-;; Insert-state TAB.  cc-mode binds TAB to `c-indent-line-or-region', which in
-;; a line's indentation only ever re-indents, so TAB on an indented line does
-;; nothing.  Use `indent-for-tab-command' like every other mode: the first TAB
-;; re-indents, a repeated TAB inserts another level, and past the indentation
-;; it inserts.  Bound as "TAB", not [tab]: Doom's smart [tab] (snippet
-;; fields, completion popup) still goes first and falls through to this.
-(map! :after solidity-mode
-      :map solidity-mode-map
-      :i "TAB" #'indent-for-tab-command)
-
-;;; Diagnostics
-;; Being a c-mode, solidity-mode also gets cc-mode's `flymake-cc' backend,
-;; which runs the C compiler over Solidity.  Diagnostics come from the LSP
-;; (solc + solhint).  cppcheck is skipped in +flymake-linters.el.
-(add-hook! 'solidity-mode-hook
-  (defun +solidity-drop-c-checkers-h ()
+                        (alist-get 'statement-cont c-offsets-alist)))
+    ;; Don't run the C compiler over Solidity while eglot is not connected.
     (remove-hook 'flymake-diagnostic-functions #'flymake-cc t)))
 
 ;;; Formatter
-;; :lang solidity calls `set-formatter!' for prettier (via npx) inside its own
-;; `(after! solidity-mode ...)'.  That runs after any `(after! apheleia ...)' in
-;; config.el, so it silently replaced forge-fmt.  This `after!' is registered
-;; later than the module's, so it runs last and wins.  forge finds the nearest
-;; foundry.toml from the buffer's directory and applies its [fmt] section.
+;; `:lang solidity' sets prettier inside its own `after!' block, so this has
+;; to be registered after it to win.
 (after! solidity-mode
-  (set-formatter! 'forge-fmt '("forge" "fmt" "--raw" "-") :modes '(solidity-mode)))
+  (set-formatter! 'forge-fmt '("forge" "fmt" "--raw" "-")
+    :modes '(solidity-mode)))
 
 ;;; LSP
+
 (defvar +solidity-solc-cache-dir (file-name-concat doom-cache-dir "solc/")
   "Where vscode-solidity-server caches the soljson compilers it downloads.
-If unset, the server writes soljson-<version>.js into the project root.")
+Without it the server writes soljson-<version>.js into the project root.")
 
 (defun +solidity-lsp-settings (root)
-  "Return the vscode-solidity-server `solidity' settings for the project at ROOT."
+  "Return the vscode-solidity-server settings for the project at ROOT."
   (let* ((cfg  (+solidity-forge-config root))
          (solc (alist-get 'solc cfg))
          (libs (append (alist-get 'libs cfg) nil)))
@@ -112,9 +71,9 @@ If unset, the server writes soljson-<version>.js into the project root.")
      :solidity
      (list
       :linter "solhint"
-      ;; Use the project's pinned solc (foundry.toml `solc = "0.8.17"').  The
+      ;; Use the project's pinned solc (foundry.toml `solc = "0.8.17"'). The
       ;; server's default, "latest", rejects exact pragmas such as
-      ;; `pragma solidity 0.8.17;'.  `solc' may also be a path to a binary,
+      ;; `pragma solidity 0.8.17;'. `solc' may also be a path to a binary,
       ;; which solc-js can't use, so only accept a bare version.
       :compileUsingRemoteVersion
       (if (and (stringp solc)
@@ -122,47 +81,36 @@ If unset, the server writes soljson-<version>.js into the project root.")
           solc
         "latest")
       ;; Directories searched for `import "pkg/..."': Foundry `libs' (which
-      ;; includes Soldeer's dependencies/) plus lib/ and node_modules/.  The
+      ;; includes Soldeer's dependencies/) plus lib/ and node_modules/. The
       ;; server reads remappings.txt itself.
       :packageDefaultDependenciesDirectory
       (vconcat (delete-dups (append libs '("lib" "node_modules"))))))))
 
-(defun +solidity--lsp-log-message (workspace params)
-  "Log the server's window/logMessage PARAMS unless the message is null."
-  (when (lsp:show-message-request-params-message params)
-    (lsp--window-log-message workspace params)))
+(defun +solidity-eglot-workspace-configuration (_server)
+  "Return the settings eglot pushes to vscode-solidity-server.
+Eglot calls this in the project root with `major-mode' set to the mode the
+server was started in, so it stays out of the way of other servers."
+  (when (derived-mode-p 'solidity-mode)
+    (+solidity-lsp-settings default-directory)))
 
-(after! lsp-mode
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-stdio-connection '("vscode-solidity-server" "--stdio"))
-    :activation-fn (lsp-activate-on "solidity")
-    :priority 1                 ; beat lsp-mode's built-in Nomic Foundation client
-    :server-id 'vscode-solidity
-    ;; Once per start the server sends window/logMessage with "message": null,
-    ;; and lsp-mode's default handler errors on it ("Error processing message
-    ;; (wrong-type-argument stringp nil)").  Drop those; log the rest as usual.
-    :notification-handlers
-    (let ((handlers (make-hash-table :test #'equal)))
-      (puthash "window/logMessage" #'+solidity--lsp-log-message handlers)
-      handlers)
-    :initialization-options     ; the server treats a string as its solc cache dir
-    (lambda ()
-      (make-directory +solidity-solc-cache-dir t)
-      (expand-file-name +solidity-solc-cache-dir))
-    ;; The server never requests workspace/configuration.  It only applies
-    ;; settings pushed through didChangeConfiguration, so push them on startup.
-    :initialized-fn
-    (lambda (workspace)
-      (with-lsp-workspace workspace
-        (lsp--set-configuration
-         (+solidity-lsp-settings (lsp--workspace-root workspace))))))))
+(set-eglot-client! 'solidity-mode
+                   (list "vscode-solidity-server" "--stdio"
+                         ;; The server treats a string as its solc cache dir.
+                         :initializationOptions
+                         (lambda (_server)
+                           (make-directory +solidity-solc-cache-dir t)
+                           (expand-file-name +solidity-solc-cache-dir))))
 
-;; :lang solidity has no +lsp flag, so start lsp the same way Doom's +lsp
-;; modules do.
+(after! eglot
+  (setq-default eglot-workspace-configuration
+                #'+solidity-eglot-workspace-configuration))
+
+;; `:lang solidity' has no +lsp flag, so start the server the way Doom's
+;; +lsp modules do.
 (add-hook 'solidity-mode-local-vars-hook #'lsp! 'append)
 
 ;;; Foundry commands (SPC m ...)
+
 (defun +solidity--forge (args)
   "Run `forge ARGS' with `compile' from the Foundry project root.
 With a prefix argument, edit the command before running it."
@@ -221,10 +169,6 @@ With a prefix argument, edit the command before running it."
     (+solidity--forge (format "test -vvv --match-path %s --match-test '^%s\\('"
                               (+solidity--relative-file) name))))
 
-;; The test submenu is a plain keymap, like `ai/pi-agent-map' in config.el,
-;; not map!'s `(:prefix ("t" . "desc") ...)'.  Flymake's elisp checker compiles
-;; this file without Doom's macros, so it treats map! as a function and fails
-;; on that dotted pair ("proper-list-p").
 (defvar-keymap +solidity-test-map
   :doc "forge test commands for solidity-mode."
   "a" '("all"          . +solidity/test-all)
