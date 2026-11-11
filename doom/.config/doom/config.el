@@ -134,6 +134,7 @@
 
 ;; Projectile project autodiscovery
 (setq projectile-project-search-path '(("~/Projects" . 2)))
+(setq projectile-require-project-root 'prompt)
 
 ;; Dired keybinds and configuration
 (map! :after dired
@@ -162,12 +163,25 @@
 
 ;;; LSP SERVERS
 
-;; C/C++ : clangd flags
+;; C : clangd (C only, no C++/ObjC)
+;; .h files are always C: skip Doom's C/C++/ObjC header guessing
+;; (`+cc-c-c++-objc-mode'). `c-mode' is remapped to `c-ts-mode' by tree-sitter.
+(setf (alist-get "\\.h\\'" auto-mode-alist nil nil #'equal) 'c-mode)
+;; :lang cc starts lsp in C++/ObjC buffers too; keep it for C only.
+(remove-hook 'c++-mode-local-vars-hook #'lsp!)
+(remove-hook 'c++-ts-mode-local-vars-hook #'lsp!)
+(remove-hook 'objc-mode-local-vars-hook #'lsp!)
 (after! lsp-clangd
   (setq lsp-clients-clangd-args
-        '("--background-index" "--clang-tidy" "--header-insertion=iwyu"
-          "--completion-style=detailed" "--function-arg-placeholders"
-          "--fallback-style=llvm")))
+        (append (seq-filter (lambda (a) (string-prefix-p "-j=" a))
+                            lsp-clients-clangd-args) ; keep Doom's -j=N
+                '("--background-index" "--clang-tidy" "--header-insertion=iwyu"
+                  "--completion-style=detailed" "--function-arg-placeholders"
+                  "--fallback-style=llvm")))
+  ;; Without a compile_commands.json clangd parses .h files as C++ (it decides
+  ;; by extension, not by the editor's languageId). Make the fallback C.
+  (setf (lsp--client-initialization-options (gethash 'clangd lsp-clients))
+        '(:fallbackFlags ["-xc" "-std=gnu23"])))
 
 ;; Rust : rust-analyzer (clippy on check, all features, build + proc-macro)
 (after! lsp-rust
@@ -331,7 +345,7 @@
 ;; cppcheck / cmakelint / hadolint / statix run alongside the LSP diagnostics.
 ;; Backend definitions live in +flymake-linters.el (ported from nvim lint.lua).
 (load! "+flymake-linters")
-(add-hook! '(c-mode-hook c++-mode-hook c-ts-mode-hook c++-ts-mode-hook
+(add-hook! '(c-mode-hook c-ts-mode-hook
              cmake-mode-hook cmake-ts-mode-hook
              dockerfile-mode-hook dockerfile-ts-mode-hook
              nix-mode-hook nix-ts-mode-hook)

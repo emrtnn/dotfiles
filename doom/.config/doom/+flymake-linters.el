@@ -48,7 +48,7 @@
 
   ;; --- cppcheck ----------------------------------------------------------
   (flymake-collection-define-rx +flymake-collection-cppcheck
-    "A C/C++ static analyzer using cppcheck (no stdin -> temp file)."
+    "A C static analyzer using cppcheck (no stdin -> temp file)."
     :title "cppcheck"
     :write-type 'file
     :pre-let ((cppcheck-exec +flymake-cppcheck-executable))
@@ -57,10 +57,7 @@
     :command `(,cppcheck-exec
                "-q"
                "--enable=warning,style,performance,portability"
-               ,(concat "--language="
-                        (pcase major-mode
-                          ((or 'c-mode 'c-ts-mode) "c")
-                          (_ "c++")))
+               "--language=c"
                "--template={file}:{line}:{column}: {severity}: {message} [{id}]"
                ,flymake-collection-temp-file)
     :regexps
@@ -133,7 +130,7 @@ e.g. cmake/dockerfile/nix)."
           ;; solidity-mode derives from c-mode (and runs `c-mode-hook'), but
           ;; cppcheck would parse Solidity as C. Its LSP covers diagnostics.
           ((derived-mode-p 'solidity-mode) nil)
-          ((derived-mode-p 'c-mode 'c++-mode 'c-ts-mode 'c++-ts-mode)
+          ((derived-mode-p 'c-mode 'c-ts-mode)
            '(+flymake-collection-cppcheck))
           ((derived-mode-p 'cmake-mode 'cmake-ts-mode)
            '(+flymake-collection-cmakelint))
