@@ -1,106 +1,27 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;;
+;; Only what Doom does not already do. Changes here need no `doom sync'.
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets. It is optional.
 (setq user-full-name "emrtnn"
       user-mail-address "emrtnn@proton.me")
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom:
-;;
-;; - `doom-font' -- the primary font to use
-;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
-;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;; - `doom-symbol-font' -- for symbols
-;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
-;;
-;; See 'C-h v doom-font' for documentation and more examples of what they
-;; accept. For example:
+;;; Look
 
-(setq doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 18)
-      doom-variable-pitch-font (font-spec :family "GeistMono Nerd Font" :size 20))
+(setq doom-theme 'caelus                ; themes/caelus-theme.el
+      doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 18)
+      doom-variable-pitch-font (font-spec :family "GeistMono Nerd Font" :size 20)
+      display-line-numbers-type 'relative
+      scroll-margin 8)
 
-;;; EDITOR CONFIG
-;; Configure file reload on external changes
-(setq auto-revert-use-notify t)
-(setq global-auto-revert-non-file-buffers t)
-(global-auto-revert-mode 1)
-
-;; Set line numbers relative to cursor position
-(setq display-line-numbers-type 'relative)
-
-;; Indentation, mirroring nvim (tabstop=2 shiftwidth=2 expandtab shiftround).
-(setq-default indent-tabs-mode nil
-              tab-width 2
-              standard-indent 2
-              evil-shift-width 2
-              evil-shift-round t)
-
-(setq +whitespace-guess-in-projects t)
-
-;; Cursor color per evil state, matching the modeline indicator.
+;; Cursor colour per evil state, matching the modeline indicator.
 (setq evil-normal-state-cursor   '(box "#ef934d")
       evil-insert-state-cursor   '(bar "#72ca68")
       evil-visual-state-cursor   '(box "#e28dc6")
       evil-replace-state-cursor  '(hbar "#f16e65")
       evil-operator-state-cursor '(hollow "#efbf71"))
 
-;; Buffer
-(setq scroll-margin 8
-      evil-want-fine-undo t)
-
-;; Markdown
-(after! markdown-mode
-  (setq markdown-hide-markup t
-        markdown-header-scaling t
-        markdown-fontify-code-blocks-natively t
-        markdown-enable-wiki-links t)
-  (add-hook 'markdown-mode-hook #'markdown-display-inline-images))
-
-;;; Window Management
-(defun my/find-file-split-right (file)
-  "Open FILE in a new window to the right."
-  (interactive "FFind file: ")
-  (select-window (split-window-right))
-  (find-file file))
-
-(defun my/find-file-split-below (file)
-  "Open FILE in a new window below."
-  (interactive "FFind file: ")
-  (select-window (split-window-below))
-  (find-file file))
-
-(after! embark
-  (map! :map embark-file-map
-        "v" #'my/find-file-split-right
-        "h" #'my/find-file-split-below))
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-(setq doom-theme 'caelus)
-;; Specify both a dark and light theme, like so and Doom will choose which one
-;; to load based on your system light/dark setting:
-;;
-;;   (setq doom-theme '(doom-one   . doom-one-light))   ; (DARK . LIGHT)
-;;
-;; If you want more pro-active theme switching based on OS light/dark mode, look
-;; up the `auto-dark' package.
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
-
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
-
-;;; Dashboard: hydra
-(defun caelus/dashboard-hydra-banner ()
+;; Dashboard: hydra banner instead of the Doom logo, and no GitHub footer.
+(defun my-dashboard-banner ()
   (propertize
    (string-join
     '("⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣿⣶⣿⣦⣼⣆"
@@ -117,245 +38,93 @@
     "\n")
    'face '+dashboard-banner))
 
-(setq +dashboard-ascii-banner-fn #'caelus/dashboard-hydra-banner
-      fancy-splash-image nil)          ; use the ASCII banner in GUI frames too
+(setq +dashboard-ascii-banner-fn #'my-dashboard-banner)
+(remove-hook '+dashboard-functions #'+dashboard-widget-footer)
 
-;; Replace the footer widget (GitHub icon linking to the Doom repo) with a
-;; blank spacer so the load-time line keeps its margin.
-(defun caelus/dashboard-widget-spacer ()
-  (insert "\n\n"))
+;;; Editing
 
-(setq +dashboard-functions
-      (cl-substitute #'caelus/dashboard-widget-spacer #'+dashboard-widget-footer
-                     +dashboard-functions))
+;; Reload a buffer as soon as its file changes on disk, so edits made by the
+;; pi agent show up while the buffer is visible. Doom alone only checks when
+;; you switch buffer, window or frame.
+(after! autorevert
+  (setq auto-revert-use-notify t        ; Doom turns this off
+        auto-revert-avoid-polling t))   ; notifications only, no 5s polling
+(global-auto-revert-mode 1)
 
-;; Adjust vterm's max scrollback
-(setq vterm-max-scrollback 100000)
-
-;; Projectile project autodiscovery
+;; Projects live in ~/Projects/<group>/<repo>.
 (setq projectile-project-search-path '(("~/Projects" . 2)))
-(setq projectile-require-project-root 'prompt)
 
-;; Dired keybinds and configuration
-(map! :after dired
-      :map dired-mode-map
-      :n "h" #'dired-up-directory
-      :n "l" #'dired-find-file)
+;; These files are symlinks into ~/dotfiles, which Emacs 31 does not trust,
+;; so without this there are no elisp diagnostics in my own config.
+(add-to-list 'trusted-content "~/dotfiles/")
 
-;;; LANGUAGES
-;; lsp semantic highlights
-(setq lsp-semantic-tokens-enable t)
+;;; Languages
+;; Eglot starts one server per buffer and needs nothing here for Go (gopls),
+;; Zig (zls), Python (basedpyright), Nix (nixd) or shell.
 
-;;; Systemd unit files
-;; Highlighting comes from `systemd-mode' (packages.el); LSP from the
-;; `systemd-lsp' binary (pacman: systemd-lsp).
-(after! lsp-mode
-  (add-to-list 'lsp-language-id-configuration '(systemd-mode . "systemd"))
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection "systemd-lsp")
-                    :activation-fn (lsp-activate-on "systemd")
-                    :server-id 'systemd-lsp)))
+;; C: without a compile_commands.json clangd parses .h files as C++.
+(set-eglot-client! '(c-mode c-ts-mode)
+                   '("clangd" :initializationOptions
+                     (:fallbackFlags ["-xc" "-std=gnu23"])))
+
+;; Rust: diagnostics from clippy instead of `cargo check'.
+(setq rustic-lsp-check-command "clippy")
+
+;; Lua: Doom's server command expects lua-language-server unpacked in its own
+;; data dir. Mine is on PATH, so replace it once Doom has registered its own.
+(after! (:or lua-mode lua-ts-mode)
+  (set-eglot-client! '(lua-mode lua-ts-mode) '("lua-language-server")))
+
+;; CMake: Doom only hooks the server up when the non-tree-sitter cmake-mode
+;; loads, which never happens once cmake-ts-mode is in use.
+(add-hook 'cmake-ts-mode-local-vars-hook #'lsp! 'append)
+
+;; systemd units: the mode comes from packages.el, the server is systemd-lsp.
+(set-eglot-client! 'systemd-mode '("systemd-lsp"))
 (add-hook 'systemd-mode-local-vars-hook #'lsp! 'append)
 
-;; Astro
-(add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
-(add-hook 'web-mode-hook #'lsp! 'append)
-
-;;; LSP SERVERS
-
-;; C : clangd (C only, no C++/ObjC)
-;; .h files are always C: skip Doom's C/C++/ObjC header guessing
-;; (`+cc-c-c++-objc-mode'). `c-mode' is remapped to `c-ts-mode' by tree-sitter.
-(setf (alist-get "\\.h\\'" auto-mode-alist nil nil #'equal) 'c-mode)
-;; :lang cc starts lsp in C++/ObjC buffers too; keep it for C only.
-(remove-hook 'c++-mode-local-vars-hook #'lsp!)
-(remove-hook 'c++-ts-mode-local-vars-hook #'lsp!)
-(remove-hook 'objc-mode-local-vars-hook #'lsp!)
-(after! lsp-clangd
-  (setq lsp-clients-clangd-args
-        (append (seq-filter (lambda (a) (string-prefix-p "-j=" a))
-                            lsp-clients-clangd-args) ; keep Doom's -j=N
-                '("--background-index" "--clang-tidy" "--header-insertion=iwyu"
-                  "--completion-style=detailed" "--function-arg-placeholders"
-                  "--fallback-style=llvm")))
-  ;; Without a compile_commands.json clangd parses .h files as C++ (it decides
-  ;; by extension, not by the editor's languageId). Make the fallback C.
-  (setf (lsp--client-initialization-options (gethash 'clangd lsp-clients))
-        '(:fallbackFlags ["-xc" "-std=gnu23"])))
-
-;; Rust : rust-analyzer (clippy on check, all features, build + proc-macro)
-(after! lsp-rust
-  (setq lsp-rust-all-features t
-        lsp-rust-analyzer-cargo-run-build-scripts t
-        lsp-rust-analyzer-proc-macro-enable t
-        lsp-rust-analyzer-cargo-watch-command "clippy"))
-
-;; Python : basedpyright (types/hover) + ruff add-on (lint + organize-imports)
-;; IMPORTANT: these must be set BEFORE lsp-pyright loads. lsp-pyright registers
-;; its server dependency (`basedpyright-langserver') from
-;; `lsp-pyright-langserver-command' AT LOAD TIME, so `after!' would be too late
-;; (lsp would look for the nonexistent `pyright-langserver' and silently fall
-;; back to ruff only). A plain top-level setq runs at config load, before any
-;; python buffer triggers lsp-pyright, and defcustom respects the prior value.
-(setq lsp-pyright-langserver-command "basedpyright"
-      lsp-pyright-disable-organize-imports t          ; ruff owns import organization
-      lsp-pyright-type-checking-mode "basic"
-      ;; built-in severity overrides (ruff/basedpyright split, matching nvim)
-      lsp-pyright-diagnostic-severity-overrides
-      '(("reportUnusedImport"     . "none")
-        ("reportUnusedVariable"   . "none")
-        ("reportUndefinedVariable" . "none")
-        ("reportUnboundVariable"  . "none")
-        ("reportRedeclaration"    . "none")
-        ("reportDuplicateImport"  . "none")))
-;; ruff starts automatically as an add-on once `ruff' is on PATH. nvim disables
-;; ruff's hover so basedpyright owns it; lsp-mode has no per-client hover toggle,
-;; so if hover becomes noisy, uncomment and verify this:
-;; (add-hook 'lsp-after-initialize-hook
-;;           (lambda ()
-;;             (when (eq (lsp--client-server-id (lsp--workspace-client lsp--cur-workspace)) 'ruff)
-;;               (lsp:set-server-capabilities-hover-provider?
-;;                (lsp--workspace-server-capabilities lsp--cur-workspace) nil))))
-
-;; Lua : lua-language-server
-(after! lsp-lua
-  (setq lsp-lua-completion-call-snippet "Replace"
-        lsp-lua-hint-enable t
-        lsp-lua-telemetry-enable nil))
-
-;; TS/JS : inlay hints (ts-ls; lsp-mode drives both ts.* and js.* from these)
-(after! lsp-javascript
-  (setq lsp-javascript-display-parameter-name-hints "literals"
-        lsp-javascript-display-parameter-type-hints t
-        lsp-javascript-display-variable-type-hints t
-        lsp-javascript-display-property-declaration-type-hints t
-        lsp-javascript-display-return-type-hints t
-        lsp-javascript-display-enum-member-value-hints t))
-
-;; Solidity : vscode-solidity-server (solc + solhint), forge fmt, forge-aware
-;; indentation and forge build/test commands. Everything lives in +solidity.el.
+;; Solidity with Foundry.
 (load! "+solidity")
 
-;; Docker : let hadolint own these best-practice diagnostics
-(after! lsp-dockerfile
-  (setq lsp-dockerfile-deprecated-maintainer "ignore"
-        lsp-dockerfile-directive-casing "ignore"
-        lsp-dockerfile-empty-continuation-line "ignore"
-        lsp-dockerfile-instruction-casing "ignore"
-        lsp-dockerfile-instruction-cmd-multiple "ignore"
-        lsp-dockerfile-instruction-entrypoint-multiple "ignore"
-        lsp-dockerfile-instruction-healthcheck-multiple "ignore"
-        lsp-dockerfile-instruction-json-single-quotes "ignore"))
+;;; Formatting on save
+;; Only where I do not use the formatter Doom picks by default.
 
-;; Biome (JS/TS/JSON/CSS lint + code actions) via the third-party `lsp-biome'
-;; (packages.el). Runs as an add-on next to ts-ls / css-ls. Formatting stays in
-;; apheleia.
-(after! lsp-biome
-  (advice-add 'lsp-biome--has-config-p :override #'always))
+(set-formatter! 'ruff :modes '(python-mode python-ts-mode))
 
-;; Tailwind: lsp-mode's built-in client (add-on, starts when the project has a
-;; tailwind config or tailwindcss v4 in package.json). Its default mode list
-;; lacks css-ts-mode, which Doom uses for .css.
-(after! lsp-tailwindcss
-  (add-to-list 'lsp-tailwindcss-major-modes 'css-ts-mode))
+(set-formatter! 'alejandra '("alejandra" "--quiet" "-")
+  :modes '(nix-mode nix-ts-mode))
 
-;; CSS: don't flag Tailwind v4 directives (@theme, @apply, @utility...) as
-;; unknown at-rules.
-(after! lsp-css
-  (setq lsp-css-lint-unknown-at-rules "ignore"))
+;; C: LLVM style with left-aligned pointers, unless the project has its own
+;; .clang-format.
+(set-formatter! 'clang-format
+  '("clang-format" "-assume-filename"
+    (or (apheleia-formatters-local-buffer-file-name)
+        (apheleia-formatters-mode-extension)
+        ".c")
+    (unless (locate-dominating-file default-directory ".clang-format")
+      "--style={BasedOnStyle: LLVM, PointerAlignment: Left}")))
 
-;;; FORMATTING (apheleia)
-(after! apheleia
-  ;; --- formatters apheleia doesn't define out of the box ---
-  (setf (alist-get 'ruff-fix apheleia-formatters)        ; ruff lint autofix (stdin->stdout)
-        '("ruff" "check" "-n" "--fix" "--fix-only" "--stdin-filename" filepath "-"))
-  (setf (alist-get 'alejandra apheleia-formatters)
-        '("alejandra" "--quiet" "-"))
-  (setf (alist-get 'php-cs-fixer apheleia-formatters)    ; no stdin -> use apheleia `inplace'
-        '("php-cs-fixer" "fix" "--using-cache=no" "--quiet" inplace))
-  ;; gersemi: 2-space indent unless the project ships a .gersemirc.
-  (setf (alist-get 'gersemi apheleia-formatters)
-        '("gersemi"
-          (when (not (locate-dominating-file default-directory ".gersemirc"))
-            (list "--indent" "2"))
-          "-"))
-  ;; clang-format: LLVM + PointerAlignment Left, unless a project .clang-format
-  ;; exists (clang-format reads that itself).
-  (setf (alist-get 'clang-format apheleia-formatters)
-        '("clang-format"
-          "-assume-filename"
-          (or (apheleia-formatters-local-buffer-file-name)
-              (apheleia-formatters-mode-extension) ".c")
-          (when (not (locate-dominating-file default-directory ".clang-format"))
-            "--style={BasedOnStyle: LLVM, PointerAlignment: Left}")))
+;; CMake: 2-space indent, unless the project has its own .gersemirc.
+(set-formatter! 'gersemi
+  '("gersemi"
+    (unless (locate-dominating-file default-directory ".gersemirc")
+      '("--indent" "2"))
+    "-")
+  :modes '(cmake-mode cmake-ts-mode))
 
-  ;; --- per-mode formatter choice (classic + tree-sitter modes) ---
-  ;; Order for python mirrors conform: lint-fix, organize-imports, then format.
-  (dolist (entry '((python-mode        . (ruff-fix ruff-isort ruff))
-                   (python-ts-mode     . (ruff-fix ruff-isort ruff))
-                   (js-mode            . biome)
-                   (js-ts-mode         . biome)
-                   (typescript-mode    . biome)
-                   (typescript-ts-mode . biome)
-                   (tsx-ts-mode        . biome)
-                   (json-mode          . biome)
-                   (js-json-mode       . biome)
-                   (json-ts-mode       . biome)
-                   (css-mode           . biome)
-                   (css-ts-mode        . biome)
-                   (nix-mode           . alejandra)
-                   (nix-ts-mode        . alejandra)
-                   (php-mode           . php-cs-fixer)
-                   (php-ts-mode        . php-cs-fixer)
-                   (cmake-mode         . gersemi)
-                   (cmake-ts-mode      . gersemi)
-                   (bash-ts-mode       . shfmt)))
-    (setf (alist-get (car entry) apheleia-mode-alist) (cdr entry))))
-;; Note: lua->stylua, rust->rustfmt, zig->zig-fmt, sh->shfmt and web-mode->prettier
-;; (for .astro) are already apheleia/Doom defaults, so they need no entry here.
-;; solidity->forge-fmt is set in +solidity.el (it must run after :lang solidity).
+;;; Spell check: English and Spanish at the same time
 
-;;; SPELLCHECK (spell-fu + aspell, English and Spanish at the same time)
-;; A word is accepted if it appears in either dictionary.
 (setq ispell-dictionary "en")
 
 (add-hook! 'spell-fu-mode-hook
-  (defun my/spell-fu-add-spanish-h ()
+  (defun my-spell-add-spanish-h ()
     (spell-fu-dictionary-add (spell-fu-get-ispell-dictionary "es"))
     (spell-fu-dictionary-add
-     (spell-fu-get-personal-dictionary "es-personal" (expand-file-name "ispell/es.pws" doom-data-dir)))))
+     (spell-fu-get-personal-dictionary
+      "es-personal" (expand-file-name "ispell/es.pws" doom-data-dir)))))
 
-;;; DIAGNOSTICS (flymake)
-(after! flymake
-  (setq flymake-show-diagnostics-at-end-of-line 'short))
+;;; Pi coding agent (SPC o p)
 
-;; Emacs 31 refuses to byte-compile (hence flymake-check) elisp in "untrusted"
-;; files, since macro expansion runs code. Doom only trusts the ~/.config/{doom,
-;; emacs}/ *symlink* paths, but these live in ~/dotfiles and dev projects in
-;; `buffer-file-truename' (the ~/ form), not an expanded /home/... path.
-(dolist (dir '("~/dotfiles/" "~/Projects/"))
-  (add-to-list 'trusted-content dir))
-
-(custom-set-faces!
-  '(flymake-error   :underline nil)
-  '(flymake-warning :underline nil)
-  '(flymake-note    :underline nil))
-
-;;; EXTRA LINTERS (flymake backends with no language server)
-;; cppcheck / cmakelint / hadolint / statix run alongside the LSP diagnostics.
-;; Backend definitions live in +flymake-linters.el (ported from nvim lint.lua).
-(load! "+flymake-linters")
-(add-hook! '(c-mode-hook c-ts-mode-hook
-             cmake-mode-hook cmake-ts-mode-hook
-             dockerfile-mode-hook dockerfile-ts-mode-hook
-             nix-mode-hook nix-ts-mode-hook)
-           #'+my/flymake-extra-linters)
-;; Re-add the extra backends after lsp sets up its own flymake backend.
-(with-eval-after-load 'lsp-diagnostics
-  (add-hook 'lsp-diagnostics-mode-hook #'+my/flymake-extra-linters))
-
-;;; AI
-;; Pi Coding agent
 (defun ai/pi-agent ()
   "Open the pi coding agent in ghostel in a vertical split, rooted at the project.
 Reuses the buffer for the project if it is still running."
