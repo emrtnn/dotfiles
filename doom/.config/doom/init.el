@@ -26,6 +26,7 @@
        (evil +everywhere)
        file-templates
        fold
+       multiple-cursors
        (format +onsave)
        snippets
        (whitespace +guess +trim)
