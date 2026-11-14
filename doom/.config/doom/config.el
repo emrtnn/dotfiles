@@ -58,6 +58,9 @@
 ;; so without this there are no elisp diagnostics in my own config.
 (add-to-list 'trusted-content "~/dotfiles/")
 
+;; Set evil-snipe to the whole buffer
+(setq evil-snipe-scope 'buffer)
+
 ;;; Languages
 ;; Eglot starts one server per buffer and needs nothing here for Go (gopls),
 ;; Zig (zls), Python (basedpyright), Nix (nixd) or shell.
