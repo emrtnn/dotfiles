@@ -119,7 +119,6 @@ refresh_minutes = 15
     use_event_reminders = true
 
 [control_center]
-circular_avatar = true
 hidden_tabs = []
 show_avatar_border = true
 show_session_button = true
@@ -444,7 +443,7 @@ enabled = [ "noctalia/translator", "noctalia/screen_recorder", "3ri4ng0ld/ip-mon
 
 [shell]
 app_icon_color = "on_surface"
-app_icon_colorize = false
+circular_avatar = true
 avatar_path = "/home/emrtnn/Pictures/avatar.png"
 button_borders = true
 card_borders = true
