@@ -52,7 +52,9 @@
 (global-auto-revert-mode 1)
 
 ;; Projects live in ~/Projects/<group>/<repo>.
-(setq projectile-project-search-path '(("~/Projects" . 2)))
+(after! projectile
+  (setq projectile-project-search-path '(("~/Projects" . 2))
+        projectile-enable-caching nil))
 
 ;; These files are symlinks into ~/dotfiles, which Emacs 31 does not trust,
 ;; so without this there are no elisp diagnostics in my own config.
