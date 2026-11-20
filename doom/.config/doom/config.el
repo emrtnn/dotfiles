@@ -8,8 +8,7 @@
 ;;; Look
 
 (setq doom-theme 'caelus                ; themes/caelus-theme.el
-      doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 18)
-      doom-variable-pitch-font (font-spec :family "GeistMono Nerd Font" :size 20)
+      doom-font (font-spec :family "GeistMono Nerd Font" :size 16)
       display-line-numbers-type 'relative
       scroll-margin 8)
 
