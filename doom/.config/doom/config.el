@@ -43,9 +43,9 @@
 
 ;;; Editing
 
-;; Reload a buffer as soon as its file changes on disk, so edits made by the
-;; pi agent show up while the buffer is visible. Doom alone only checks when
-;; you switch buffer, window or frame.
+;; Reload a buffer as soon as its file changes on disk, so edits made by a
+;; coding agent show up while the buffer is visible. Doom alone only checks
+;; when you switch buffer, window or frame.
 (after! autorevert
   (setq auto-revert-use-notify t        ; Doom turns this off
         auto-revert-avoid-polling t))   ; notifications only, no 5s polling
@@ -128,7 +128,11 @@
      (spell-fu-get-personal-dictionary
       "es-personal" (expand-file-name "ispell/es.pws" doom-data-dir)))))
 
-;;; Pi coding agent (SPC o p)
+;;; AI AGENTS (SPC o p)
+;; One prefix for every agent: pi runs in ghostel, Autolith in agent-shell.
+;; Both open in a vertical split on the right, about a third of the width.
+
+;;;; Pi
 
 (defun ai/pi-agent ()
   "Open the pi coding agent in ghostel in a vertical split, rooted at the project.
@@ -172,9 +176,69 @@ When called from inside a pi buffer, kill that one."
         (when (and (window-live-p win) (not (one-window-p t)))
           (delete-window win))))))
 
-(defvar-keymap ai/pi-agent-map
-  :doc "Keymap for the pi coding agent."
-  "p" '("Open pi agent" . ai/pi-agent)
-  "k" '("Kill pi agent" . ai/pi-agent-kill))
+;;;; Autolith
+;; emacs/autolith.el from the installed release: an agent-shell conversation
+;; with Emacs access, or `autolith-ide' with a sly REPL in Autolith's image.
 
-(map! :leader :desc "pi agent" "o p" ai/pi-agent-map)
+(use-package! autolith
+  :load-path "~/.local/share/autolith/installation/current/libexec/autolith/emacs"
+  :commands (autolith-agent-shell autolith-ide autolith-ide-reconnect))
+
+;; agent-shell shows its buffer in the selected window by default; put it in
+;; the same right-hand split pi uses instead.
+(after! agent-shell
+  (setq agent-shell-display-action
+        '((display-buffer-reuse-window display-buffer-in-direction)
+          (direction . right)
+          (window-width . 0.35))))
+
+(defun ai/autolith-buffers ()
+  "Return the live Autolith agent-shell buffers of the current project."
+  (require 'agent-shell)
+  (seq-filter (lambda (buf)
+                (eq (map-nested-elt (buffer-local-value 'agent-shell--state buf)
+                                    '(:agent-config :identifier))
+                    'autolith))
+              (agent-shell-project-buffers)))
+
+(defun ai/autolith-agent ()
+  "Open the Autolith conversation for the project in a vertical split.
+Reuses the project's conversation if it is still running."
+  (interactive)
+  (if-let* ((buf (car (ai/autolith-buffers))))
+      (if-let* ((win (get-buffer-window buf)))
+          (select-window win)
+        (select-window (display-buffer buf agent-shell-display-action)))
+    (let ((default-directory (or (doom-project-root) default-directory)))
+      (autolith-agent-shell))))
+
+(defun ai/autolith-agent-kill ()
+  "Kill the Autolith conversation for the current project and quit its window.
+When called from inside an Autolith buffer, kill that one."
+  (interactive)
+  (let ((buf (if (memq (current-buffer) (ai/autolith-buffers))
+                 (current-buffer)
+               (car (ai/autolith-buffers)))))
+    (if (not (buffer-live-p buf))
+        (message "No Autolith buffer for this project")
+      (let ((win (get-buffer-window buf)))
+        (when-let* ((proc (get-buffer-process buf)))
+          (set-process-query-on-exit-flag proc nil))
+        (kill-buffer buf)
+        (when (and (window-live-p win) (not (one-window-p t)))
+          (delete-window win))))))
+
+;;;; Keys
+;; SPC o p p  pi:       a open, k kill
+;; SPC o p a  Autolith: a open, k kill, i IDE, r reconnect sly
+
+(map! :leader
+      (:prefix-map ("o p" . "AI agents")
+       (:prefix-map ("p" . "pi")
+        :desc "Open pi agent" "a" #'ai/pi-agent
+        :desc "Kill pi agent" "k" #'ai/pi-agent-kill)
+       (:prefix-map ("a" . "Autolith")
+        :desc "Open Autolith"          "a" #'ai/autolith-agent
+        :desc "Kill Autolith"          "k" #'ai/autolith-agent-kill
+        :desc "Autolith IDE"           "i" #'autolith-ide
+        :desc "Reconnect Autolith sly" "r" #'autolith-ide-reconnect)))
