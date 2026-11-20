@@ -26,3 +26,13 @@
 (setf (config :model-provider) "omniroute-anthropic")
 (setf (config :model) "claude-opus-5-5")
 
+;;; Standing instructions, sent with every provider request.
+
+(define-context-contributor user-git-policy (request)
+  "Keep changes uncommitted until the user asks for a commit."
+  (declare (ignore request))
+  (make-context-contribution
+   :identifier  "user-git-policy"
+   :instruction "Git: leave your changes uncommitted in the working tree. Commit only when the user explicitly asks for a commit. This overrides the default rule to commit finished work."
+   :class       ':mandatory
+   :lifetime    ':turn))
