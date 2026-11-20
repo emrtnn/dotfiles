@@ -30,6 +30,7 @@
        (format +onsave)
        snippets
        (whitespace +guess +trim)
+       lispy
 
        :emacs
        (dired +icons)
@@ -65,6 +66,7 @@
 
        ;; Also edited by hand.
        emacs-lisp
+       (common-lisp +tree-sitter)
        (lua +lsp +tree-sitter)
        (nix +lsp +tree-sitter)
        (python +lsp +tree-sitter)
