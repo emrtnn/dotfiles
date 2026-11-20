@@ -8,7 +8,7 @@
 ;;; Look
 
 (setq doom-theme 'caelus                ; themes/caelus-theme.el
-      doom-font (font-spec :family "GeistMono Nerd Font" :size 16)
+      doom-font (font-spec :family "IoskeleyMono Nerd Font" :size 17)
       display-line-numbers-type 'relative
       scroll-margin 8)
 
@@ -233,11 +233,11 @@ When called from inside an Autolith buffer, kill that one."
 
 (map! :leader
       (:prefix-map ("o p" . "AI agents")
-       (:prefix-map ("p" . "pi")
-        :desc "Open pi agent" "a" #'ai/pi-agent
-        :desc "Kill pi agent" "k" #'ai/pi-agent-kill)
-       (:prefix-map ("a" . "Autolith")
-        :desc "Open Autolith"          "a" #'ai/autolith-agent
-        :desc "Kill Autolith"          "k" #'ai/autolith-agent-kill
-        :desc "Autolith IDE"           "i" #'autolith-ide
-        :desc "Reconnect Autolith sly" "r" #'autolith-ide-reconnect)))
+                   (:prefix-map ("p" . "pi")
+                    :desc "Open pi agent" "a" #'ai/pi-agent
+                    :desc "Kill pi agent" "k" #'ai/pi-agent-kill)
+                   (:prefix-map ("a" . "Autolith")
+                    :desc "Open Autolith"          "a" #'ai/autolith-agent
+                    :desc "Kill Autolith"          "k" #'ai/autolith-agent-kill
+                    :desc "Autolith IDE"           "i" #'autolith-ide
+                    :desc "Reconnect Autolith sly" "r" #'autolith-ide-reconnect)))
