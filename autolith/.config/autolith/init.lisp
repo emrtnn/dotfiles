@@ -36,3 +36,11 @@
    :instruction "Git: leave your changes uncommitted in the working tree. Commit only when the user explicitly asks for a commit. This overrides the default rule to commit finished work."
    :class       ':mandatory
    :lifetime    ':turn))
+
+;;; Lisp dependencies of sly contribs loaded over Slynk.
+;; Autolith's source registry ignores the user ASDF configuration, so point
+;; ASDF at Quicklisp's agnostic-lizard, which sly-stepper loads on connect.
+
+(let ((directory (first (directory "~/quicklisp/dists/quicklisp/software/agnostic-lizard-*/"))))
+  (when directory
+    (pushnew directory asdf:*central-registry* :test #'equal)))
