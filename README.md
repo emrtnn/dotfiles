@@ -638,7 +638,10 @@ sudo pacman -S --needed \
   guestfs-tools libguestfs \
   nmap openbsd-netcat inetutils arp-scan bc tcpdump hydra samba cifs-utils wpscan exploitdb \
   metasploit python-jsbeautifier sqlmap hashcat john openssl impacket perl-image-exiftool \
-  sslscan ghidra openldap binwalk
+  sslscan ghidra openldap binwalk \
+  starship ttf-jetbrains-mono scrot udisks2 docker-compose \
+  sbcl bubblewrap claude-code claude-desktop webkitgtk-6.0 \
+  aspell aspell-en aspell-es isync graphviz tidy composer pandoc-cli tk
 ```
 
 **pacman: NVIDIA gaming machine**
@@ -671,7 +674,8 @@ paru -S --needed \
   carapace-bin bibata-cursor-theme-bin ttf-twemoji-color ttf-all-the-icons \
   helium-browser-bin pi-coding-agent-bin mpv-modernz vesktop-bin onlyoffice-bin localsend-bin \
   sddm-silent-theme virtio-win quickemu nixd foundry-bin \
-  burpsuite ffuf smbmap whatweb seclists rockyou wfuzz pspy cewl-git ruby-evil-winrm hashid
+  burpsuite ffuf smbmap whatweb seclists rockyou wfuzz pspy cewl-git ruby-evil-winrm hashid \
+  mu ttf-symbola raddebugger-git orca-ide-bin
 ```
 
 **AUR**
@@ -708,7 +712,11 @@ the repos.
 | rustup, zig, php, nodejs, npm, pnpm, python, uv                                                                                        | toolchains; runtimes for mason's tools                                                |
 | nixd, foundry-bin                                                                                                                      | Nix LSP (not in mason); `forge fmt` (extra's `foundry` is unrelated)                  |
 | emacs-wayland, libvterm, libtool, cmake, nerd symbols, all-the-icons                                                                   | Doom Emacs, vterm, icons                                                              |
-| pi-coding-agent-bin                                                                                                                    | pi coding agent                                                                       |
+| pi-coding-agent-bin, claude-code, claude-desktop, orca-ide-bin                                                                         | coding agents, Claude desktop app, Orca agent IDE                                     |
+| sbcl, bubblewrap, webkitgtk-6.0                                                                                                        | Common Lisp (Autolith), sandboxing, web engine for GTK apps                           |
+| aspell(-en, -es), mu, isync, graphviz, tidy, composer, pandoc-cli, tk                                                                  | Doom: spell check, mu4e mail + `mbsync`, org/markdown/web/PHP tooling                 |
+| raddebugger-git                                                                                                                        | RAD debugger                                                                          |
+| starship, scrot, udisks2, docker-compose                                                                                               | prompt, X screenshots, disk mounting, Docker Compose                                  |
 | mangowm, xorg-xwayland, noctalia, ghostty                                                                                              | compositor, shell (bar, launcher, lock…), terminal                                    |
 | satty, grim, slurp, hyprpicker, brightnessctl, wl-clipboard, wtype, cliphist, gpu-screen-recorder                                      | screenshots, picker, brightness, clipboard, key injection, recorder                   |
 | qt5/qt6-wayland, xdg-desktop-portal(-wlr, -gtk)                                                                                        | Qt on Wayland; portals (screencast via wlr)                                           |
@@ -716,7 +724,7 @@ the repos.
 | pipewire (+ alsa, pulse, jack), wireplumber                                                                                            | audio                                                                                 |
 | dconf, gvfs, mesa, vulkan-icd-loader, xdg-utils, polkit, gsettings-desktop-schemas                                                     | desktop plumbing                                                                      |
 | adw-gtk-theme, nwg-look, papirus-icon-theme, bibata-cursor-theme-bin, qt6ct, breeze                                                    | GTK/Qt theming, icons, cursor                                                         |
-| noto-fonts(-cjk, -emoji), nerd fonts, material symbols, twemoji                                                                        | fonts (Iosevka Term: Ghostty; Iosevka Nerd: Doom; GeistMono: Noctalia)                |
+| noto-fonts(-cjk, -emoji), nerd fonts, jetbrains mono, material symbols, twemoji, symbola                                               | fonts (Iosevka Term: Ghostty; Iosevka Nerd: Doom; GeistMono: Noctalia)                |
 | librewolf, helium-browser-bin, torbrowser-launcher                                                                                     | browsers                                                                              |
 | telegram-desktop, signal-desktop, vesktop-bin                                                                                          | chat                                                                                  |
 | evince, onlyoffice-bin, mpv, mpv-modernz, playerctl                                                                                    | PDF, office, video + OSC, media keys                                                  |
