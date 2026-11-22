@@ -684,6 +684,17 @@ paru -S --needed \
 paru -S --needed proton-ge-custom-bin heroic-games-launcher-bin lib32-extest iptvnator-bin
 ```
 
+**Local PKGBUILDs: both machines**
+
+Packages that aren't in the repos or the AUR live in `pkgbuilds/`:
+
+```
+cd ~/dotfiles/pkgbuilds/ttf-ioskeley-mono-nerd && makepkg -si
+```
+
+To upgrade, bump `pkgver` and replace the zip checksums with the `sha256`
+digests GitHub shows on the new release, then run `makepkg -si` again.
+
 **Rust toolchain**
 
 ```
@@ -724,7 +735,7 @@ the repos.
 | pipewire (+ alsa, pulse, jack), wireplumber                                                                                            | audio                                                                                 |
 | dconf, gvfs, mesa, vulkan-icd-loader, xdg-utils, polkit, gsettings-desktop-schemas                                                     | desktop plumbing                                                                      |
 | adw-gtk-theme, nwg-look, papirus-icon-theme, bibata-cursor-theme-bin, qt6ct, breeze                                                    | GTK/Qt theming, icons, cursor                                                         |
-| noto-fonts(-cjk, -emoji), nerd fonts, jetbrains mono, material symbols, twemoji, symbola                                               | fonts (Iosevka Term: Ghostty; Iosevka Nerd: Doom; GeistMono: Noctalia)                |
+| noto-fonts(-cjk, -emoji), nerd fonts, jetbrains mono, material symbols, twemoji, symbola, ttf-ioskeley-mono-nerd                       | fonts (Ioskeley Mono Term: Ghostty; Ioskeley Mono: Doom; GeistMono: Noctalia)         |
 | librewolf, helium-browser-bin, torbrowser-launcher                                                                                     | browsers                                                                              |
 | telegram-desktop, signal-desktop, vesktop-bin                                                                                          | chat                                                                                  |
 | evince, onlyoffice-bin, mpv, mpv-modernz, playerctl                                                                                    | PDF, office, video + OSC, media keys                                                  |
@@ -1519,8 +1530,9 @@ fstab. Leave with `exit`, `umount -R /mnt`.
 
 Every top-level directory is a stow package mirroring `$HOME`
 (`zsh/.config/zsh/.zshrc` → `~/.config/zsh/.zshrc`), except `librewolf/`
-(copied into the browser profile by hand). Also: `.luarc.json` (Lua LSP
-globals), `.stowrc` (target `~`), `.gitignore` (blocks keys and secrets).
+(copied into the browser profile by hand) and `pkgbuilds/` (local packages,
+section 12). Also: `.luarc.json` (Lua LSP globals), `.stowrc` (target `~`),
+`.gitignore` (blocks keys and secrets).
 
 | Package              | Puts in `$HOME`                                                                             | What                                                                          |
 | -------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |

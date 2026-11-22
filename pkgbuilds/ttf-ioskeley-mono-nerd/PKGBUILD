@@ -1,0 +1,21 @@
+# Maintainer: emrtnn <emrtnn@proton.me>
+
+pkgname=ttf-ioskeley-mono-nerd
+pkgver=2.2.0
+pkgrel=1
+pkgdesc='Ioskeley Mono and Ioskeley Mono Term, patched with Nerd Font glyphs (Normal width)'
+arch=('any')
+url='https://github.com/ahatem/IoskeleyMono'
+license=('OFL-1.1')
+source=("IoskeleyMono-NerdFont-$pkgver.zip::$url/releases/download/v$pkgver/IoskeleyMono-NerdFont.zip"
+        "IoskeleyMono-Term-NerdFont-$pkgver.zip::$url/releases/download/v$pkgver/IoskeleyMono-Term-NerdFont.zip"
+        "LICENSE-$pkgver::https://raw.githubusercontent.com/ahatem/IoskeleyMono/v$pkgver/LICENSE")
+sha256sums=('6d216e793d3eb3e80c10f85f330d7a4d46317cfd5b0e4c4cd7021d1c108c160e'
+            '25c601b1a561f73cbb0366931148861451a972463718d25e76bf869fd3d54754'
+            '1084285bd2bddf706d566e11a92fcbae2706da4a8eafac49ed34c871d01fb7fe')
+
+package() {
+  find "$srcdir" -path '*/Normal/*.ttf' \
+    -exec install -Dm644 -t "$pkgdir/usr/share/fonts/TTF" {} +
+  install -Dm644 "LICENSE-$pkgver" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
