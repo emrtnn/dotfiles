@@ -41,6 +41,7 @@
 
        :term
        ghostel                          ; hosts the pi agent (SPC o p)
+       eshell
 
        :checkers
        (syntax +flymake +icons)

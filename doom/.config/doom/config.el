@@ -1,3 +1,4 @@
+
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;;
 ;; Only what Doom does not already do. Changes here need no `doom sync'.
@@ -126,6 +127,18 @@
     (spell-fu-dictionary-add
      (spell-fu-get-personal-dictionary
       "es-personal" (expand-file-name "ispell/es.pws" doom-data-dir)))))
+
+;;; TERMINAL
+
+;; Redirect visual commands to ghostel
+(use-package! ghostel-eshell
+  :hook (eshell-load . ghostel-eshell-visual-command-mode))
+
+;; Add items to the default eshell visual commands lists
+
+(after! em-term
+  (dolist (cmd '("btop" "nvim" "lazygit" "lazydocker" "tuicr" "yazi"))
+    (add-to-list 'eshell-visual-commands cmd)))
 
 ;;; AI AGENTS (SPC o p)
 ;; One prefix for every agent: pi runs in ghostel, Autolith in agent-shell.
