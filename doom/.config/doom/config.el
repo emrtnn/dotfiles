@@ -41,6 +41,13 @@
 (setq +dashboard-ascii-banner-fn #'my-dashboard-banner)
 (remove-hook '+dashboard-functions #'+dashboard-widget-footer)
 
+;;; Dired
+
+;; Doom's dired runs through dirvish, which sets `dired-hide-details-mode'
+;; itself from `dirvish-hide-details' (Doom: full-frame and side only).
+(after! dirvish
+  (setq dirvish-hide-details t))
+
 ;;; Editing
 
 ;; Reload a buffer as soon as its file changes on disk, so edits made by a
