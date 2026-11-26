@@ -71,9 +71,6 @@
 (setq evil-snipe-scope 'buffer)
 
 ;;; Languages
-;; Eglot starts one server per buffer and needs nothing here for Go (gopls),
-;; Zig (zls), Python (basedpyright), Nix (nixd) or shell.
-
 ;; C: without a compile_commands.json clangd parses .h files as C++.
 (set-eglot-client! '(c-mode c-ts-mode)
                    '("clangd" :initializationOptions
@@ -91,7 +88,7 @@
 ;; loads, which never happens once cmake-ts-mode is in use.
 (add-hook 'cmake-ts-mode-local-vars-hook #'lsp! 'append)
 
-;; systemd units: the mode comes from packages.el, the server is systemd-lsp.
+;; Systemd units: the mode comes from packages.el, the server is systemd-lsp.
 (set-eglot-client! 'systemd-mode '("systemd-lsp"))
 (add-hook 'systemd-mode-local-vars-hook #'lsp! 'append)
 
