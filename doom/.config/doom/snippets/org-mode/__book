@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: Book notes
+# --
+:PROPERTIES:
+:AUTHOR:   $2
+:STARTED:  `(format-time-string "[%Y-%m-%d %a]")`
+:FINISHED:
+:RATING:
+:END:
+#+title: ${1:`(capitalize (replace-regexp-in-string "[-_]" " " (file-name-base buffer-file-name)))`}
+#+filetags: ${3::book:}
+
+$0

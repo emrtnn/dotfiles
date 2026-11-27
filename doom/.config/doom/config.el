@@ -141,6 +141,11 @@
 (setq org-directory "~/Org/"
       +org-capture-notes-file "inbox.org")   ; Doom's default is notes.org
 
+;; New files in books/ and learning/ start from snippets/org-mode/__book and
+;; __learning: TAB through title, author, tags.
+(set-file-template! "/Org/books/[^/]+\\.org\\'" :trigger "__book" :mode 'org-mode)
+(set-file-template! "/Org/learning/[^/]+\\.org\\'" :trigger "__learning" :mode 'org-mode)
+
 ;;; TERMINAL
 
 ;; Redirect visual commands to ghostel

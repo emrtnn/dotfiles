@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Learning notes
+# --
+#+title: ${1:`(capitalize (replace-regexp-in-string "[-_]" " " (file-name-base buffer-file-name)))`}
+#+filetags: ${2::learning:}
+
+$0
