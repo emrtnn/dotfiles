@@ -70,6 +70,7 @@
        (common-lisp +tree-sitter)
        (lua +lsp +tree-sitter)
        (nix +lsp +tree-sitter)
+       (org +dragndrop +crypt +pandoc +present +pretty) ; book and learning notes
        (python +lsp +tree-sitter)
        (sh +lsp)
        solidity                         ; Foundry setup in +solidity.el
@@ -79,7 +80,6 @@
        (javascript +lsp +tree-sitter)
        (json +lsp +tree-sitter)
        (markdown +tree-sitter)
-       org
        (php +lsp +tree-sitter)
        (web +lsp +tree-sitter)
        (yaml +lsp +tree-sitter)

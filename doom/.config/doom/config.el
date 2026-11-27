@@ -132,6 +132,15 @@
      (spell-fu-get-personal-dictionary
       "es-personal" (expand-file-name "ispell/es.pws" doom-data-dir)))))
 
+;;; Notes (org)
+;; Everything else is Doom's :lang org defaults.
+;; SPC n n n  quick note into inbox.org
+;; SPC n F    open or create a note, e.g. books/dune.org, learning/rust.org
+;; SPC n f    find a note    SPC n s  search all notes
+
+(setq org-directory "~/Org/"
+      +org-capture-notes-file "inbox.org")   ; Doom's default is notes.org
+
 ;;; TERMINAL
 
 ;; Redirect visual commands to ghostel
